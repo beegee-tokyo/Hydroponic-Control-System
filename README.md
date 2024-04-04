@@ -20,4 +20,7 @@ Some images of the PoC setup:
 | :---------------: | :-------------: | :--------------: | :-------------: |
 | <img src="./assets/hydroponic-system.jpg" alt="Modules"> | <img src="./assets/sensor.jpg" alt="Modules"> | <img src="./assets/pump-valve-control.jpg" alt="Modules"> | <img src="./assets/pump-valve.jpg" alt="Modules"> |
 | WisGate Connect | Chirpstack V4 | Grafana | NodeRED control |
-| <img src="./assets/wisgate-connect.jpg" alt="Modules" width=30%> | <img src="./assets/chirpstack.png" alt="Modules"> |<img src="./assets/grafana.png" alt="Modules"> | <img src="./assets/node-red.png" alt="Modules"> |
+| <img src="./assets/wisgate-connect.jpg" alt="Modules" width=70%> | <img src="./assets/chirpstack.png" alt="Modules"> | <img src="./assets/grafana.png" alt="Modules"> | <img src="./assets/node-red.png" alt="Modules"> |
+
+## Data Flow
+<center> <img src="./assets/data-flow.png" alt="Modules"> </center>
