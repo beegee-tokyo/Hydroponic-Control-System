@@ -1,3 +1,6 @@
+| <img src="./assets/RAK-Whirls.png" alt="RAKWireless"> | <img src="./assets/RUI3.jpg" alt="RUI3" width=30%> | <img src="./assets/rakstar.jpg" alt="RAKstar" > |    
+| :-: | :-: | :-: |     
+
 # Hydroponic-Control-System
 
 This is a PoC for a hydroponic control system built with RAKwireless WisBlock modules.
@@ -205,7 +208,7 @@ Payload `{0xAA, 0x55, 0x01, 0x00, 0x00, 0x02, 0x58, 0x00, 0x00, 0x0B, 0xB8}` set
 
 ----
 
-### WisBlock Control Node
+### WisBlock Display Node
 The firmware for the Display Node is based on RUI3 BSP. Source code is in the [Hydroponic-Display] folder(./Hydroponic-Display).    
 
 ----
@@ -213,7 +216,7 @@ The firmware for the Display Node is based on RUI3 BSP. Source code is in the [H
 ## Software on the WisGate Connect RAK7391
 
 ### Docker containers
-All applications used on the WisGate Connect is installed using Docker. This makes the setup and the maintainence much simpler.    
+All applications used on the WisGate Connect are installed using Docker. This makes the setup and the maintainence much simpler.    
 For the installation of the application a docker-compose.yml file was used. The yaml file can be found in [docker-compose.yml](./docker-compose.yml).    
 
 ⚠️This yaml file works for my installation, but you should carefully adjust it to your requirments. Special the udp-packet-forwarder needs to be updated with new gateway EUI's and their location info.⚠️    
@@ -234,7 +237,7 @@ For debugging and container management I installed as well [Portainer](https://g
 
 [1] Are the containers with the UDP packet forwarders for the concentrators.       
 [2] Is the control application NodeRED       
-[3] Ate the visualization and databank applications
+[3] Ate the visualization and databank applications    
 [4] Is the complete Chirpstack V4 installation
 
 ----
@@ -255,18 +258,18 @@ For the devices, two device profiles are used. One is for a Class C, which is us
 
 Both device profiles are using the same uplink decoders, the uplinks are formatted in an extend Cayenne LPP format. The usage of an uplink decoder allows to have the decoded data in the MQTT messages. This makes it easier in NodeRED and Grafana to analyze and visualize the received data. The decoder can be found in [Chirpstack-Decoder.js](./Chirpstack-Decoder.js).     
 
-In addition, the application is setup with an _**influxDB**_ integration to forward the data into a database.    
+In addition, the application is setup with an _**influxDB v2**_ integration to forward the data into a database.    
 <center> <img src="./assets/chirpstack-integration.png" alt="CS Integration"> </center>    
 Thanks to the usage of Docker, instead of a complete IP address or URL, the _**influxdb2_** in the API endpoint is pointing to the correct address of influxDB2.
 
 ----
 
-### influxDB2 and Grafana
-The combination of InfluxDB2 and Grafana is used for the visualization of some node data. Grafana is connected to InfluxDB2 to collect the information the database receives from the Chirpstack integration.     
+### influxDB v2 and Grafana
+The combination of InfluxDB v2 and Grafana is used for the visualization of some node data. Grafana is connected to InfluxDB v2 to collect the information the database receives from the Chirpstack integration.     
 ⚠️ This combination was used for an simple installation on the WisGate Connect. ⚠️    
 It can be replaced with other visualizations, like Datacake.    
 
-As the data is already decoded in the Chirpstack decoder, the query from Grafana to influxDB2 is much simpler and it is not required to actually decode the received payloads:    
+As the data is already decoded in the Chirpstack decoder, the query from Grafana to influxDB v2 is much simpler and it is not required to actually decode the received payloads:    
 ```flux
 from(bucket: "RAKwireless")
   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
@@ -297,6 +300,7 @@ _**`node-red-dashboard`**_ for the UI
 _**`node-red-node-base64`**_ required to create Base64 encoded payload    
 _**`node-red-node-email`**_ required to send out emails with warnings 
 
+#### NodeRED global settings
 To keep the nodes flexible and to avoid editing nodes if a device or application credential has changed, four global variables are set during the start of the flow. Using this method, the values have to be changed only in one node, even if they are used in many other nodes.    
 
 <center> <img src="./assets/node-red-variables.png" alt="NodeRed UI Integration"> </center>
@@ -506,3 +510,11 @@ The timer settings are stored in the flash of the device and reused after a powe
 
 <center> <img src="./assets/node-red-pump-time-control.png" alt="Check message"> </center> 
 
+
+----
+
+# LoRa® is a registered trademark or service mark of Semtech Corporation or its affiliates. 
+
+----
+
+# LoRaWAN® is a licensed mark.
