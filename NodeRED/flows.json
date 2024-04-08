@@ -2,7 +2,7 @@
     {
         "id": "f6f2187d.f17ca8",
         "type": "tab",
-        "label": "Get data from Chirpstack",
+        "label": "Hydroponic System",
         "disabled": false,
         "info": ""
     },
@@ -10,7 +10,7 @@
         "id": "ea04ed65566cc035",
         "type": "mqtt in",
         "z": "f6f2187d.f17ca8",
-        "name": "Chirpstack-MQTT",
+        "name": "MQTT-Receive",
         "topic": "application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/#",
         "qos": "2",
         "datatype": "json",
@@ -19,8 +19,8 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 90,
-        "y": 380,
+        "x": 80,
+        "y": 540,
         "wires": [
             [
                 "811ed5459d95c417",
@@ -33,14 +33,14 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Check",
-        "func": "var newMsg = [];\n// Watertank\nif (msg.topic.indexOf(\"ac1f09fffe08e88f\") != -1) {\n    if (typeof (msg.payload[\"object\"]) != \"undefined\") {\n        if (typeof (msg.payload[\"object\"][\"analog_in_61\"]) != \"undefined\") {\n            node.warn(\"analog_in_61 found \" + msg.payload[\"object\"][\"analog_in_61\"]);\n            msg['water_level'] = msg.payload[\"object\"][\"analog_in_61\"];\n            msg['battery'] = msg.payload[\"object\"][\"voltage_1\"];\n            msg['overflow'] = msg.payload[\"object\"][\"presence_63\"];\n            msg['low_level'] = msg.payload[\"object\"][\"presence_62\"];\n            msg['type'] = \"Waterlevel\";\n            msg.payload = msg['water_level'];\n\n            // If overflow send a downlink\n            if (msg['overflow'] == 1) {\n                node.warn(\"Overflow\");\n                msg['todo'] = \"Downlink\";\n                msg['payload'] = \"{\\\"devEui\\\":\\\"ac1f09fffe08e88f\\\", \\\"confirmed\\\":false,\\\"fPort\\\":10,\\\"data\\\":\\\"qlUHAQGqVQ==\\\"}\"\n                msg['topic'] = \"application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/ac1f09fffe08e88f/command/down\";\n                msg['qos'] = 2;\n            }\n            else {\n                node.warn(\"No Overflow\");\n                msg['todo'] = \"None\";\n            }\n        }\n    }\n}\n\n// TDS sensor\nif (msg.topic.indexOf(\"ac1f09fffe0cf054\") != -1) { \n    if (typeof (msg.payload[\"object\"]) != \"undefined\") {\n        if (typeof (msg.payload[\"object\"][\"concentration_64\"]) != \"undefined\") { // concentration_64 == TDS value\n            node.warn(\"concentration_64 found\");\n            msg['tds_value'] = msg.payload[\"object\"][\"concentration_64\"];// concentration_64\n            msg['type'] = \"TDS-Sensor\";\n        }\n        if (typeof (msg.payload[\"object\"][\"presence_64\"]) != \"undefined\") { // concentration_64 == TDS value\n            node.warn(\"presence_64 found\");\n            var valve_status = msg.payload[\"object\"][\"presence_64\"];\n            // If overflow send a downlink\n            if (valve_status == 1) {\n                node.warn(\"TDS low, open valve \" + msg['tds_value']);\n                msg['todo'] = \"Downlink\";\n                msg['payload'] = \"{\\\"devEui\\\":\\\"ac1f09fffe067151\\\", \\\"confirmed\\\":false,\\\"fPort\\\":10,\\\"data\\\":\\\"qlUBAQ==\\\"}\" // pump on AA550101\n                msg['topic'] = \"application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/ac1f09fffe067151/command/down\";\n                msg['qos'] = 2;\n            }\n            else {\n                node.warn(\"TDS Ok \" + msg['tds_value']);\n                msg['todo'] = \"None\";\n            }\n        } else {\n            node.warn(\"presence_64 not found\");\n        }\n\n        // Always set this last!\n        // msg.payload = msg['tds_value'];\n    }\n}\n\n// // Light sensor\n// if (msg.topic.indexOf(\"ac1f09fffe09016c\") != -1) {\n//     if (typeof (msg.payload[\"object\"]) != \"undefined\") {\n//         if (typeof (msg.payload[\"object\"][\"illuminance\"]) != \"undefined\") {\n//             node.warn(\"illuminance\");\n//             msg['illuminance'] = msg.payload[\"object\"][\"illuminance\"];\n//             msg['type'] = \"Light Sensor\";\n\n//             // If overflow send a downlink\n//             if (msg['illuminance'] >= 50) {\n//                 node.warn(\"Bright, lights off: \" + msg['illuminance']);\n//                 msg['todo'] = \"Downlink\";\n//                 msg['payload'] = \"{\\\"devEui\\\":\\\"ac1f09fffe067151\\\", \\\"confirmed\\\":false,\\\"fPort\\\":10,\\\"data\\\":\\\"qlUAAA==\\\"}\" // AA550101\n//                 msg['topic'] = \"application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/ac1f09fffe067151/command/down\";\n//                 msg['qos'] = 2;\n//             }\n//             else {\n//                 node.warn(\"Dark, lights on: \" + msg['illuminance']);\n//                 msg['todo'] = \"Downlink\";\n//                 msg['payload'] = \"{\\\"devEui\\\":\\\"ac1f09fffe067151\\\", \\\"confirmed\\\":false,\\\"fPort\\\":10,\\\"data\\\":\\\"qlUAAQ==\\\"}\" // AA550100\n//                 msg['topic'] = \"application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/ac1f09fffe067151/command/down\";\n//                 msg['qos'] = 2;\n//             }\n//         }\n//     }\n// }\nreturn msg;",
+        "func": "var newMsg = [];\n// Watertank\nif (msg.topic.indexOf(\"ac1f09fffe08e88f\") != -1) {\n    if (typeof (msg.payload[\"object\"]) != \"undefined\") {\n        if (typeof (msg.payload[\"object\"][\"analog_in_61\"]) != \"undefined\") {\n            node.warn(\"analog_in_61 found \" + msg.payload[\"object\"][\"analog_in_61\"]);\n            msg['water_level'] = msg.payload[\"object\"][\"analog_in_61\"];\n            msg['battery'] = msg.payload[\"object\"][\"voltage_1\"];\n            msg['overflow'] = msg.payload[\"object\"][\"presence_63\"];\n            msg['low_level'] = msg.payload[\"object\"][\"presence_62\"];\n            msg['type'] = \"Waterlevel\";\n            msg.payload = msg['water_level'];\n\n            // If overflow send a downlink\n            if (msg['overflow'] == 1) {\n                node.warn(\"Overflow\");\n                msg['todo'] = \"Downlink\";\n                msg['payload'] = \"{\\\"devEui\\\":\\\"ac1f09fffe08e88f\\\", \\\"confirmed\\\":false,\\\"fPort\\\":10,\\\"data\\\":\\\"qlUHAQGqVQ==\\\"}\"\n                msg['topic'] = \"application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/ac1f09fffe08e88f/command/down\";\n                msg['qos'] = 2;\n            }\n            else {\n                node.warn(\"No Overflow\");\n                msg['todo'] = \"None\";\n            }\n        }\n    }\n}\n\n// TDS sensor\nif (msg.topic.indexOf(global.get(\"sensor_dev_eui\")) != -1) { \n    if (typeof (msg.payload[\"object\"]) != \"undefined\") {\n        if (typeof (msg.payload[\"object\"][\"concentration_64\"]) != \"undefined\") { // concentration_64 == TDS value\n            node.warn(\"concentration_64 found\");\n            msg['tds_value'] = msg.payload[\"object\"][\"concentration_64\"];// concentration_64\n            msg['type'] = \"TDS-Sensor\";\n        }\n        if (typeof (msg.payload[\"object\"][\"presence_64\"]) != \"undefined\") { // concentration_64 == TDS value\n            node.warn(\"presence_64 found\");\n            var valve_status = msg.payload[\"object\"][\"presence_64\"];\n            // If overflow send a downlink\n            if (valve_status == 1) {\n                node.warn(\"TDS low, open valve \" + msg['tds_value']);\n                msg['todo'] = \"Downlink\";\n                msg['payload'] = \"{\\\"devEui\\\":\\\"\" + global.get(\"relay_dev_eui\") + \"\\\", \\\"confirmed\\\":false,\\\"fPort\\\":10,\\\"data\\\":\\\"qlUBAQ==\\\"}\" // pump on AA550101\n                msg['topic'] = \"application/\" + global.get(\"app_id\") + \"/device/\" + global.get(\"relay_dev_eui\") + \"/command/down\";\n                msg['qos'] = 2;\n                msg['email'] = true;\n            }\n            else {\n                node.warn(\"TDS Ok \" + msg['tds_value']);\n                msg['todo'] = \"None\";\n            }\n            node.warn(\"Payload: \" + msg.payload);\n            node.warn(\"Topic: \" + msg.topic);\n        } else {\n            node.warn(\"presence_64 not found\");\n        }\n    }\n}\n\n// Control device\nif (msg.topic.indexOf(global.get(\"relay_dev_eui\")) != -1) { \n    if (typeof (msg.payload[\"object\"]) != \"undefined\") {\n        if (typeof (msg.payload[\"object\"][\"presence_2\"]) != \"undefined\") {\n            node.warn(\"presence_2\");\n            msg['presence_2'] = msg.payload[\"object\"][\"presence_2\"];\n            msg['type'] = \"Relay Device\";\n\n            // TODO Set UI switch to current status if override is active\n        }\n    }\n}\n\n// Light sensor\nif (msg.topic.indexOf(\"ac1f09fffe09016c\") != -1) {\n    if (typeof (msg.payload[\"object\"]) != \"undefined\") {\n        if (typeof (msg.payload[\"object\"][\"illuminance\"]) != \"undefined\") {\n            node.warn(\"illuminance\");\n            msg['illuminance'] = msg.payload[\"object\"][\"illuminance\"];\n            msg['type'] = \"Light Sensor\";\n\n            // If overflow send a downlink\n            if (msg['illuminance'] >= 50) {\n                node.warn(\"Bright, lights off: \" + msg['illuminance']);\n                msg['todo'] = \"Downlink\";\n                msg['payload'] = \"{\\\"devEui\\\":\\\"ac1f09fffe067151\\\", \\\"confirmed\\\":false,\\\"fPort\\\":10,\\\"data\\\":\\\"qlUAAA==\\\"}\" // AA550101\n                msg['topic'] = \"application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/ac1f09fffe067151/command/down\";\n                msg['qos'] = 2;\n            }\n            else {\n                node.warn(\"Dark, lights on: \" + msg['illuminance']);\n                msg['todo'] = \"Downlink\";\n                msg['payload'] = \"{\\\"devEui\\\":\\\"ac1f09fffe067151\\\", \\\"confirmed\\\":false,\\\"fPort\\\":10,\\\"data\\\":\\\"qlUAAQ==\\\"}\" // AA550100\n                msg['topic'] = \"application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/ac1f09fffe067151/command/down\";\n                msg['qos'] = 2;\n            }\n        }\n    }\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "// Code added here will be run when the\n// node is being stopped or re-deployed.\nnode.warn(\"Restart V2\");",
         "libs": [],
         "x": 250,
-        "y": 380,
+        "y": 540,
         "wires": [
             [
                 "ef54917c25ea6a5c"
@@ -69,38 +69,15 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 610,
-        "y": 480,
+        "x": 630,
+        "y": 684,
         "wires": [
             [
-                "dec0b599f39008c6",
                 "e8218aba6d3e1046",
-                "40144e19155147e2",
-                "07c765f85dd9d8de"
+                "dc19f50e80bf1284"
             ],
-            [
-                "40144e19155147e2",
-                "07c765f85dd9d8de"
-            ]
+            []
         ]
-    },
-    {
-        "id": "dec0b599f39008c6",
-        "type": "mqtt out",
-        "z": "f6f2187d.f17ca8",
-        "name": "Close water tank valve",
-        "topic": "application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/ac1f09fffe08e88f/command/down",
-        "qos": "",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "eb21a8c4eb60d964",
-        "x": 1180,
-        "y": 540,
-        "wires": []
     },
     {
         "id": "ef54917c25ea6a5c",
@@ -117,12 +94,12 @@
             },
             {
                 "t": "eq",
-                "v": "Waterlevel",
+                "v": "Light Sensor",
                 "vt": "str"
             },
             {
                 "t": "eq",
-                "v": "Light Sensor",
+                "v": "Waterlevel",
                 "vt": "str"
             },
             {
@@ -133,16 +110,17 @@
         "repair": false,
         "outputs": 4,
         "x": 390,
-        "y": 380,
+        "y": 540,
         "wires": [
             [
-                "91d915157e19cea0"
-            ],
-            [
-                "06331141f0acd9d6"
+                "91d915157e19cea0",
+                "622817e7f5ef06e7"
             ],
             [
                 "95caf47240db4101"
+            ],
+            [
+                "06331141f0acd9d6"
             ],
             []
         ]
@@ -170,40 +148,19 @@
         "repair": false,
         "outputs": 2,
         "x": 620,
-        "y": 360,
+        "y": 520,
         "wires": [
             [
-                "3f9aeac3ed75ee39",
-                "7397e5aae123d3b8"
+                "dc19f50e80bf1284"
             ],
-            [
-                "7397e5aae123d3b8"
-            ]
+            []
         ]
-    },
-    {
-        "id": "3f9aeac3ed75ee39",
-        "type": "mqtt out",
-        "z": "f6f2187d.f17ca8",
-        "name": "Open hydroponic nutrient valve",
-        "topic": "application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/ac1f09fffe067151/command/down",
-        "qos": "",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "eb21a8c4eb60d964",
-        "x": 1150,
-        "y": 300,
-        "wires": []
     },
     {
         "id": "95caf47240db4101",
         "type": "switch",
         "z": "f6f2187d.f17ca8",
-        "name": "Light Sensor Actions",
+        "name": "Light Actions",
         "property": "todo",
         "propertyType": "msg",
         "rules": [
@@ -221,43 +178,25 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 620,
-        "y": 660,
+        "x": 650,
+        "y": 630,
         "wires": [
             [
-                "c271c55c11504030"
+                "dc19f50e80bf1284"
             ],
             []
         ]
-    },
-    {
-        "id": "c271c55c11504030",
-        "type": "mqtt out",
-        "z": "f6f2187d.f17ca8",
-        "name": "Switch lights on/off",
-        "topic": "application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/ac1f09fffe067151/command/down",
-        "qos": "",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "eb21a8c4eb60d964",
-        "x": 1210,
-        "y": 660,
-        "wires": []
     },
     {
         "id": "e8218aba6d3e1046",
         "type": "ui_audio",
         "z": "f6f2187d.f17ca8",
         "name": "Overflow! Check Valve",
-        "group": "cd6991c7755f2851",
+        "group": "d7227fcd391266e7",
         "voice": "urn:moz-tts:sapi:Microsoft Zira - English (United States)?en-US",
         "always": "",
-        "x": 1180,
-        "y": 500,
+        "x": 1200,
+        "y": 680,
         "wires": []
     },
     {
@@ -267,8 +206,8 @@
         "name": "",
         "group": "64502c3307ffe74d",
         "order": 1,
-        "width": "3",
-        "height": "2",
+        "width": 3,
+        "height": 1,
         "passthru": false,
         "label": "Nutrition Refill",
         "tooltip": "",
@@ -276,105 +215,15 @@
         "bgcolor": "",
         "className": "",
         "icon": "",
-        "payload": "{\"devEui\":\"ac1f09fffe067151\",\"confirmed\":false,\"fPort\":10,\"data\":\"qlUDAQ==\"}",
+        "payload": "{\"todo\":\"send\"}",
         "payloadType": "json",
-        "topic": "\"application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/ac1f09fffe067151/command/down\"",
+        "topic": "\"application/command/down\"",
         "topicType": "str",
         "x": 80,
-        "y": 300,
-        "wires": [
-            [
-                "3f9aeac3ed75ee39"
-            ]
-        ]
-    },
-    {
-        "id": "40144e19155147e2",
-        "type": "ui_gauge",
-        "z": "f6f2187d.f17ca8",
-        "name": "",
-        "group": "cd6991c7755f2851",
-        "order": 0,
-        "width": 0,
-        "height": 0,
-        "gtype": "gage",
-        "title": "Watertank level",
-        "label": "cm",
-        "format": "{{water_level}}",
-        "min": 0,
-        "max": 10,
-        "colors": [
-            "#ff0000",
-            "#e6e600",
-            "#00ff00"
-        ],
-        "seg1": "",
-        "seg2": "",
-        "className": "",
-        "x": 1200,
         "y": 460,
-        "wires": []
-    },
-    {
-        "id": "07c765f85dd9d8de",
-        "type": "ui_chart",
-        "z": "f6f2187d.f17ca8",
-        "name": "Water level",
-        "group": "cd6991c7755f2851",
-        "order": 2,
-        "width": "6",
-        "height": "20",
-        "label": "Water level",
-        "chartType": "line",
-        "legend": "false",
-        "xformat": "HH:mm:ss",
-        "interpolate": "linear",
-        "nodata": "",
-        "dot": false,
-        "ymin": "",
-        "ymax": "",
-        "removeOlder": 1,
-        "removeOlderPoints": "",
-        "removeOlderUnit": "3600",
-        "cutout": 0,
-        "useOneColor": false,
-        "useUTC": false,
-        "colors": [
-            "#1f77b4",
-            "#aec7e8",
-            "#ff7f0e",
-            "#2ca02c",
-            "#98df8a",
-            "#d62728",
-            "#ff9896",
-            "#9467bd",
-            "#c5b0d5"
-        ],
-        "outputs": 1,
-        "useDifferentColor": false,
-        "className": "",
-        "x": 1210,
-        "y": 420,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "7397e5aae123d3b8",
-        "type": "function",
-        "z": "f6f2187d.f17ca8",
-        "name": "Prepare Graph",
-        "func": "msg.payload = msg['tds_value'];\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 860,
-        "y": 360,
         "wires": [
             [
-                "8be4ecbf5907c93e"
+                "74c1791e7bbb14e1"
             ]
         ]
     },
@@ -387,8 +236,8 @@
         "tooltip": "",
         "group": "64502c3307ffe74d",
         "order": 2,
-        "width": "6",
-        "height": "3",
+        "width": 6,
+        "height": 1,
         "passthru": false,
         "outs": "end",
         "topic": "value",
@@ -398,7 +247,7 @@
         "step": "100",
         "className": "",
         "x": 80,
-        "y": 140,
+        "y": 340,
         "wires": [
             [
                 "dfa21cf220786d7e"
@@ -416,8 +265,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 260,
-        "y": 140,
+        "x": 280,
+        "y": 340,
         "wires": [
             [
                 "0ca72e9092a1eba9"
@@ -431,8 +280,8 @@
         "name": "",
         "action": "",
         "property": "bvalue",
-        "x": 440,
-        "y": 140,
+        "x": 680,
+        "y": 340,
         "wires": [
             [
                 "cd08a6cef36056c2"
@@ -444,37 +293,19 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Create MQTT",
-        "func": "msg['payload'] = \"{\\\"devEui\\\":\\\"ac1f09fffe0cf054\\\", \\\"confirmed\\\":false,\\\"fPort\\\":11,\\\"data\\\":\\\"\"+msg.bvalue+\"\\\"}\" // new nutrition value\nnode.warn(\"Payload: \" + msg['payload']);\nmsg['topic'] = \"application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/ac1f09fffe0cf054/command/down\";\nmsg['qos'] = 2;\nreturn msg;",
+        "func": "msg['payload'] = \"{\\\"devEui\\\":\\\"\" + global.get(\"sensor_dev_eui\") +\"\\\", \\\"confirmed\\\":false,\\\"fPort\\\":11,\\\"data\\\":\\\"\" + msg.bvalue + \"\\\"}\" // new nutrition value\nnode.warn(\"Payload: \" + msg['payload']);\nmsg['topic'] = \"application/\" + global.get(\"app_id\") + \"/device/\" + global.get(\"sensor_dev_eui\") +\"/command/down\";\nmsg['qos'] = 2;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 620,
-        "y": 140,
+        "x": 860,
+        "y": 340,
         "wires": [
             [
-                "82878dad56d236e3"
+                "dc19f50e80bf1284"
             ]
         ]
-    },
-    {
-        "id": "82878dad56d236e3",
-        "type": "mqtt out",
-        "z": "f6f2187d.f17ca8",
-        "name": "Set hydroponic nutrient valve",
-        "topic": "application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/ac1f09fffe0cf054/command/down",
-        "qos": "",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "eb21a8c4eb60d964",
-        "x": 1150,
-        "y": 140,
-        "wires": []
     },
     {
         "id": "8bc2cba06df853f0",
@@ -483,10 +314,10 @@
         "name": "",
         "label": "Pump Override",
         "tooltip": "",
-        "group": "64502c3307ffe74d",
-        "order": 2,
-        "width": "3",
-        "height": "3",
+        "group": "d7227fcd391266e7",
+        "order": 1,
+        "width": 3,
+        "height": 2,
         "passthru": true,
         "decouple": "false",
         "topic": "payload",
@@ -503,7 +334,7 @@
         "animate": false,
         "className": "",
         "x": 80,
-        "y": 80,
+        "y": 160,
         "wires": [
             [
                 "decf2eaf11f7da9c"
@@ -521,8 +352,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 260,
-        "y": 80,
+        "x": 280,
+        "y": 160,
         "wires": [
             [
                 "c95baa92a2ee2b82"
@@ -536,8 +367,8 @@
         "name": "",
         "action": "",
         "property": "bvalue",
-        "x": 440,
-        "y": 80,
+        "x": 680,
+        "y": 160,
         "wires": [
             [
                 "8099fc818e608ecf"
@@ -549,51 +380,33 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Create MQTT",
-        "func": "msg['payload'] = \"{\\\"devEui\\\":\\\"ac1f09fffe067151\\\", \\\"confirmed\\\":false,\\\"fPort\\\":10,\\\"data\\\":\\\"\"+msg.bvalue+\"\\\"}\" // water pump on/off\nnode.warn(\"Payload: \" + msg['payload']);\nmsg['topic'] = \"application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/ac1f09fffe067151/command/down\";\nmsg['qos'] = 2;\nreturn msg;",
+        "func": "msg['payload'] = \"{\\\"devEui\\\":\\\"\" + global.get(\"relay_dev_eui\") + \"\\\", \\\"confirmed\\\":false,\\\"fPort\\\":10,\\\"data\\\":\\\"\" + msg.bvalue + \"\\\"}\" // water pump on/off\nmsg['topic'] = \"application/\" + global.get(\"app_id\") + \"/device/\" + global.get(\"relay_dev_eui\") + \"/command/down\";msg['qos'] = 2;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 620,
-        "y": 80,
+        "x": 860,
+        "y": 160,
         "wires": [
             [
-                "490bb84411220a31"
+                "dc19f50e80bf1284"
             ]
         ]
-    },
-    {
-        "id": "490bb84411220a31",
-        "type": "mqtt out",
-        "z": "f6f2187d.f17ca8",
-        "name": "Start/Stop water pump",
-        "topic": "application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/ac1f09fffe067151/command/down",
-        "qos": "",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "eb21a8c4eb60d964",
-        "x": 1180,
-        "y": 80,
-        "wires": []
     },
     {
         "id": "d2d86295e1f1fa64",
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Check",
-        "func": "// TDS sensor\nif (msg.topic.indexOf(\"ac1f09fffe0cf054\") != -1) {\n    if (typeof (msg.payload[\"object\"]) != \"undefined\") {\n        if (typeof (msg.payload[\"object\"][\"concentration_64\"]) != \"undefined\") { // concentration_64 == TDS value\n            node.warn(\"concentration_64 found\");\n            msg['tds_value'] = msg.payload[\"object\"][\"concentration_64\"];\n            node.warn(\"tds_value \" + msg['tds_value']);\n        }\n        else {\n            msg['tds_value'] = 0;\n        }\n        if (typeof (msg.payload[\"object\"][\"analog_in_65\"]) != \"undefined\") { // analog_in_65 == pH value\n            node.warn(\"analog_in_65 found\");\n            msg['ph_value'] = Math.round((msg.payload[\"object\"][\"analog_in_65\"]) * 10.0);\n            node.warn(\"ph_value \" + msg['ph_value']);\n        }\n        else {\n            msg['ph_value'] = 0;\n        }\n        if (typeof (msg.payload[\"object\"][\"temperature\"]) != \"undefined\") { // temperature\n            node.warn(\"temperature found\");\n            msg['temp_value'] = Math.round((msg.payload[\"object\"][\"temperature\"]) * 10.0);\n            node.warn(\"temp_value \" + msg['temp_value']);\n        }\n        else {\n            msg['temp_value'] = 0;\n        }\n        if (typeof (msg.payload[\"object\"][\"humidity\"]) != \"undefined\") { // humidity\n            node.warn(\"humidity found\");\n            msg['humid_value'] = Math.round((msg.payload[\"object\"][\"humidity\"]) * 10.0);\n            node.warn(\"humid_value \" + msg['humid_value']);\n        }\n        else {\n            msg['humid_value'] = 0;\n        }\n\n        msg.bvalue = Buffer.from([0xAA, 0x55, 0xFF, (msg['tds_value'] >> 8) & 0x00ff, (msg['tds_value']) & 0x00ff\n            , (msg['ph_value'] >> 8) & 0x00ff, (msg['ph_value']) & 0x00ff\n            , (msg['temp_value'] >> 8) & 0x00ff, (msg['temp_value']) & 0x00ff\n            , (msg['humid_value'] >> 8) & 0x00ff, (msg['humid_value']) & 0x00ff]);\n        node.warn(\"Buffer \" + msg.bvalue);\n\n        msg.todo = \"OK\";\n    }\n    else\n    {\n        msg.todo = \"NOK\";\n    }\n}\nreturn msg;",
+        "func": "// TDS sensor\nif (msg.topic.indexOf(global.get(\"sensor_dev_eui\")) != -1) {\n    if (typeof (msg.payload[\"object\"]) != \"undefined\") {\n        if (typeof (msg.payload[\"object\"][\"concentration_64\"]) != \"undefined\") { // concentration_64 == TDS value\n            node.warn(\"concentration_64 found\");\n            msg['tds_value'] = msg.payload[\"object\"][\"concentration_64\"];\n            node.warn(\"tds_value \" + msg['tds_value']);\n        }\n        else {\n            msg['tds_value'] = 0;\n        }\n        if (typeof (msg.payload[\"object\"][\"analog_in_65\"]) != \"undefined\") { // analog_in_65 == pH value\n            node.warn(\"analog_in_65 found\");\n            msg['ph_value'] = Math.round((msg.payload[\"object\"][\"analog_in_65\"]) * 10.0);\n            node.warn(\"ph_value \" + msg['ph_value']);\n        }\n        else {\n            msg['ph_value'] = 0;\n        }\n        if (typeof (msg.payload[\"object\"][\"temperature\"]) != \"undefined\") { // temperature\n            node.warn(\"temperature found\");\n            msg['temp_value'] = Math.round((msg.payload[\"object\"][\"temperature\"]) * 10.0);\n            node.warn(\"temp_value \" + msg['temp_value']);\n        }\n        else {\n            msg['temp_value'] = 0;\n        }\n        if (typeof (msg.payload[\"object\"][\"humidity\"]) != \"undefined\") { // humidity\n            node.warn(\"humidity found\");\n            msg['humid_value'] = Math.round((msg.payload[\"object\"][\"humidity\"]) * 10.0);\n            node.warn(\"humid_value \" + msg['humid_value']);\n        }\n        else {\n            msg['humid_value'] = 0;\n        }\n\n        msg.bvalue = Buffer.from([0xAA, 0x55, 0xFF, (msg['tds_value'] >> 8) & 0x00ff, (msg['tds_value']) & 0x00ff\n            , (msg['ph_value'] >> 8) & 0x00ff, (msg['ph_value']) & 0x00ff\n            , (msg['temp_value'] >> 8) & 0x00ff, (msg['temp_value']) & 0x00ff\n            , (msg['humid_value'] >> 8) & 0x00ff, (msg['humid_value']) & 0x00ff]);\n        node.warn(\"Buffer \" + msg.bvalue);\n\n        msg.todo = \"OK\";\n    }\n    else\n    {\n        msg.todo = \"NOK\";\n    }\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "// Code added here will be run when the\n// node is being stopped or re-deployed.\nnode.warn(\"Restart V2\");",
         "libs": [],
-        "x": 230,
-        "y": 200,
+        "x": 250,
+        "y": 400,
         "wires": [
             [
                 "3f9d0a22b6ae8d08"
@@ -607,8 +420,8 @@
         "name": "",
         "action": "",
         "property": "bvalue",
-        "x": 480,
-        "y": 200,
+        "x": 680,
+        "y": 400,
         "wires": [
             [
                 "16fcd54f00538432"
@@ -620,37 +433,19 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Create MQTT",
-        "func": "msg['payload'] = \"{\\\"devEui\\\":\\\"AC1F09FFFE0A7994\\\", \\\"confirmed\\\":false,\\\"fPort\\\":10,\\\"data\\\":\\\"\"+msg.bvalue+\"\\\"}\" // water pump on/off\nnode.warn(\"Payload: \" + msg['payload']);\nmsg['topic'] = \"application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/AC1F09FFFE0A7994/command/down\";\nmsg['qos'] = 2;\nreturn msg;",
+        "func": "msg['payload'] = \"{\\\"devEui\\\":\\\"\" + global.get(\"display_dev_eui\") +\"\\\", \\\"confirmed\\\":false,\\\"fPort\\\":10,\\\"data\\\":\\\"\" + msg.bvalue + \"\\\"}\" // display data\nnode.warn(\"Payload: \" + msg['payload']);\nmsg['topic'] = \"application/\" + global.get(\"app_id\") + \"/device/\" + global.get(\"display_dev_eui\") +\"/command/down\";\nmsg['qos'] = 2;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 640,
-        "y": 200,
+        "x": 860,
+        "y": 400,
         "wires": [
             [
-                "1d415c4c93f4e8e5"
+                "dc19f50e80bf1284"
             ]
         ]
-    },
-    {
-        "id": "1d415c4c93f4e8e5",
-        "type": "mqtt out",
-        "z": "f6f2187d.f17ca8",
-        "name": "Update Display",
-        "topic": "application/a852689f-d9f0-4d50-86b7-b073a96f5b7d/device/AC1F09FFFE0A7994/command/down",
-        "qos": "",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "eb21a8c4eb60d964",
-        "x": 1200,
-        "y": 200,
-        "wires": []
     },
     {
         "id": "3f9d0a22b6ae8d08",
@@ -674,56 +469,12 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 350,
-        "y": 200,
+        "x": 410,
+        "y": 400,
         "wires": [
             [
                 "094d0eb0c7f8a69f"
             ],
-            []
-        ]
-    },
-    {
-        "id": "8be4ecbf5907c93e",
-        "type": "ui_chart",
-        "z": "f6f2187d.f17ca8",
-        "name": "",
-        "group": "cd6991c7755f2851",
-        "order": 3,
-        "width": "6",
-        "height": "3",
-        "label": "TDS sensor",
-        "chartType": "line",
-        "legend": "false",
-        "xformat": "HH:mm:ss",
-        "interpolate": "linear",
-        "nodata": "",
-        "dot": false,
-        "ymin": "",
-        "ymax": "",
-        "removeOlder": 1,
-        "removeOlderPoints": "",
-        "removeOlderUnit": "3600",
-        "cutout": 0,
-        "useOneColor": false,
-        "useUTC": false,
-        "colors": [
-            "#1f77b4",
-            "#aec7e8",
-            "#ff7f0e",
-            "#2ca02c",
-            "#98df8a",
-            "#d62728",
-            "#ff9896",
-            "#9467bd",
-            "#c5b0d5"
-        ],
-        "outputs": 1,
-        "useDifferentColor": false,
-        "className": "",
-        "x": 1210,
-        "y": 360,
-        "wires": [
             []
         ]
     },
@@ -734,7 +485,7 @@
         "name": "Inputs",
         "info": "Manual from UI or from Chirpstack MQTT",
         "x": 50,
-        "y": 40,
+        "y": 100,
         "wires": []
     },
     {
@@ -744,7 +495,7 @@
         "name": "Data processing and action preparation",
         "info": "",
         "x": 330,
-        "y": 40,
+        "y": 100,
         "wires": []
     },
     {
@@ -753,15 +504,311 @@
         "z": "f6f2187d.f17ca8",
         "name": "Output and Actions",
         "info": "",
-        "x": 1190,
+        "x": 1210,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "b177128091311cbc",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "LoRaWAN Node and Application definitions",
+        "func": "",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nglobal.set(\"relay_dev_eui\", \"ac1f09fffe067151\");\nglobal.set(\"sensor_dev_eui\", \"ac1f09fffe0cf054\");\nglobal.set(\"display_dev_eui\", \"ac1f09fffe0a7994\");\nglobal.set(\"app_id\", \"a852689f-d9f0-4d50-86b7-b073a96f5b7d\");\n\nnode.warn(\"relay_dev_eui = \" + global.get(\"relay_dev_eui\"));\nnode.warn(\"sensor_dev_eui = \" + global.get(\"sensor_dev_eui\"));\nnode.warn(\"display_dev_eui = \" + global.get(\"display_dev_eui\"));\nnode.warn(\"app_id = \" + global.get(\"app_id\"));",
+        "finalize": "",
+        "libs": [],
+        "x": 170,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "312cad5f034e6cb1",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "Put your Node DevEUI and AppID here",
+        "info": "",
+        "x": 510,
         "y": 40,
         "wires": []
+    },
+    {
+        "id": "74c1791e7bbb14e1",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Create MQTT",
+        "func": "node.warn(\"TDS low, open valve \" + msg['tds_value']);\nmsg['todo'] = \"Downlink\";\nmsg['payload'] = \"{\\\"devEui\\\":\\\"\" + global.get(\"relay_dev_eui\") + \"\\\", \\\"confirmed\\\":false,\\\"fPort\\\":10,\\\"data\\\":\\\"qlUDAQ==\\\"}\" // pump long on AA550301\nmsg['topic'] = \"application/\" + global.get(\"app_id\") + \"/device/\" + global.get(\"relay_dev_eui\") + \"/command/down\";\nmsg['qos'] = 2;\n\nnode.warn(\"Payload: \" + msg.payload);\nnode.warn(\"Topic: \" + msg.topic);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 460,
+        "wires": [
+            [
+                "dc19f50e80bf1284"
+            ]
+        ]
+    },
+    {
+        "id": "3e660655ad4f7f0f",
+        "type": "ui_form",
+        "z": "f6f2187d.f17ca8",
+        "name": "Water pump times",
+        "label": "Water pump On/Off times (minutes)",
+        "group": "d7227fcd391266e7",
+        "order": 2,
+        "width": 6,
+        "height": 1,
+        "options": [
+            {
+                "label": "ON time",
+                "value": "on_time",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "OFF time",
+                "value": "off_time",
+                "type": "number",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "on_time": "",
+            "off_time": ""
+        },
+        "payload": "",
+        "submit": "send",
+        "cancel": "",
+        "topic": "times",
+        "topicType": "msg",
+        "splitLayout": true,
+        "className": "",
+        "x": 90,
+        "y": 220,
+        "wires": [
+            [
+                "d6bfce9c32d0b93c"
+            ]
+        ]
+    },
+    {
+        "id": "d6bfce9c32d0b93c",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Create Payload",
+        "func": "if (typeof (msg.payload.on_time) != \"undefined\") {\n    if (typeof (msg.payload.off_time) != \"undefined\") {\n        if ((msg.payload.on_time > msg.payload.off_time) || (msg.payload.off_time < 15) || (msg.payload.on_time < 5)) {\n            node.warn(\"Wrong times\");\n            msg.todo = \"None\";\n            msg.payload = \"Wrong times\";\n\n        } else {\n            msg.payload.on_time = msg.payload.on_time * 60;\n            msg.payload.off_time = msg.payload.off_time * 60;\n            msg.bvalue = Buffer.from([0xaa, 0x55, 0x00, (msg.payload.on_time & 0xff000000) >> 24,\n                (msg.payload.on_time & 0x00ff0000) >> 16, (msg.payload.on_time & 0x0000ff00) >> 8,\n                (msg.payload.on_time & 0x000000ff), (msg.payload.off_time & 0xff000000) >> 24,\n                (msg.payload.off_time & 0x00ff0000) >> 16, (msg.payload.off_time & 0x0000ff00) >> 8,\n                (msg.payload.off_time & 0x000000ff)]);\n            msg.todo = \"Downlink\";\n            node.warn(\"Valid times found\");\n        }\n    } else {\n        node.warn(\"No OFF time\");\n        msg.todo = \"None\";\n        msg.payload = \"No Off Time\";\n    }\n} else {\n    node.warn(\"No ON time\");\n    msg.todo = \"None\";\n    msg.payload = \"No On Time\";\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 220,
+        "wires": [
+            [
+                "79354e42f1f0d492"
+            ]
+        ]
+    },
+    {
+        "id": "391e61a9d6a47b6b",
+        "type": "base64",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "action": "",
+        "property": "bvalue",
+        "x": 680,
+        "y": 280,
+        "wires": [
+            [
+                "6df547a96ede2727"
+            ]
+        ]
+    },
+    {
+        "id": "6df547a96ede2727",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Create MQTT",
+        "func": "msg['payload'] = \"{\\\"devEui\\\":\\\"\" + global.get(\"relay_dev_eui\") +\"\\\", \\\"confirmed\\\":false,\\\"fPort\\\":11,\\\"data\\\":\\\"\" + msg.bvalue + \"\\\"}\" // pump time functions\nnode.warn(\"Payload: \" + msg['payload']);\nmsg['topic'] = \"application/\" + global.get(\"app_id\") + \"/device/\" + global.get(\"relay_dev_eui\") +\"/command/down\";\nmsg['qos'] = 2;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 280,
+        "wires": [
+            [
+                "dc19f50e80bf1284"
+            ]
+        ]
+    },
+    {
+        "id": "79354e42f1f0d492",
+        "type": "switch",
+        "z": "f6f2187d.f17ca8",
+        "name": "Valid?",
+        "property": "todo",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Downlink",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "None",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 430,
+        "y": 220,
+        "wires": [
+            [
+                "391e61a9d6a47b6b",
+                "f3987535107e2e64"
+            ],
+            [
+                "53c483fedce2d058"
+            ]
+        ]
+    },
+    {
+        "id": "dc19f50e80bf1284",
+        "type": "mqtt out",
+        "z": "f6f2187d.f17ca8",
+        "name": "MQTT-Publish",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "eb21a8c4eb60d964",
+        "x": 1216,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "53c483fedce2d058",
+        "type": "ui_audio",
+        "z": "f6f2187d.f17ca8",
+        "name": "Audio warning",
+        "group": "64502c3307ffe74d",
+        "voice": "urn:moz-tts:sapi:Microsoft Zira Desktop - English (United States)?en-US",
+        "always": true,
+        "x": 1200,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "77e96690dfdc2b5c",
+        "type": "e-mail",
+        "z": "f6f2187d.f17ca8",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "authtype": "BASIC",
+        "saslformat": true,
+        "token": "oauth2Response.access_token",
+        "secure": true,
+        "tls": true,
+        "name": "bernd@giesecke.tk",
+        "dname": "Send email",
+        "x": 1204,
+        "y": 486,
+        "wires": []
+    },
+    {
+        "id": "f3987535107e2e64",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Create Email",
+        "func": "msg.topic = 'Hydroponic pump times changed';\nmsg.payload = 'On time: ' + msg.payload.on_time/60 + ' min - Off time: ' + msg.payload.off_time/60 + ' min';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 220,
+        "wires": [
+            [
+                "77e96690dfdc2b5c"
+            ]
+        ]
+    },
+    {
+        "id": "2115a5b85d049cea",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Create Email",
+        "func": "msg.topic = 'Hydroponic nutrition level low';\nmsg.payload = 'Nutrition level: ' + msg['tds_value'] + ' ppm';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 848,
+        "y": 576,
+        "wires": [
+            [
+                "77e96690dfdc2b5c"
+            ]
+        ]
+    },
+    {
+        "id": "622817e7f5ef06e7",
+        "type": "switch",
+        "z": "f6f2187d.f17ca8",
+        "name": "TDS value low?",
+        "property": "email",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 640,
+        "y": 576,
+        "wires": [
+            [
+                "2115a5b85d049cea"
+            ]
+        ]
+    },
+    {
+        "id": "20366f18aba892f1",
+        "type": "ui_spacer",
+        "z": "f6f2187d.f17ca8",
+        "name": "spacer",
+        "group": "d7227fcd391266e7",
+        "order": 3,
+        "width": 6,
+        "height": 1
     },
     {
         "id": "eb21a8c4eb60d964",
         "type": "mqtt-broker",
         "name": "Chirpstack",
-        "broker": "172.17.0.7",
+        "broker": "cs-mosquitto-1",
         "port": "1883",
         "clientid": "",
         "autoConnect": true,
@@ -785,13 +832,13 @@
         "sessionExpiry": ""
     },
     {
-        "id": "cd6991c7755f2851",
+        "id": "d7227fcd391266e7",
         "type": "ui_group",
-        "name": "Water tank control",
-        "tab": "6ca543b8c168538e",
-        "order": 1,
+        "name": "Pump Control",
+        "tab": "a3dafe33b12d76a8",
+        "order": 2,
         "disp": true,
-        "width": "6",
+        "width": 9,
         "collapse": false,
         "className": ""
     },
@@ -802,17 +849,9 @@
         "tab": "a3dafe33b12d76a8",
         "order": 1,
         "disp": true,
-        "width": "11",
+        "width": 9,
         "collapse": false,
         "className": ""
-    },
-    {
-        "id": "6ca543b8c168538e",
-        "type": "ui_tab",
-        "name": "Water Tank",
-        "icon": "dashboard",
-        "disabled": false,
-        "hidden": false
     },
     {
         "id": "a3dafe33b12d76a8",

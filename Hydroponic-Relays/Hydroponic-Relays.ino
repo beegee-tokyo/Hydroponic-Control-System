@@ -574,12 +574,17 @@ void relay_handler(void *number)
 	MYLOG("RELAY", "Set relay %d", pump_number[0]);
 	if (pump_number[0] == WATER_PUMP)
 	{
-		MYLOG("RELAY", "Handle water valve relay");
+		MYLOG("RELAY", "Handle water valve relay override");
 		// Handle water pump control
 		if (relay_pump_status == HIGH)
 		{
-			// Manual handling of the water pump start, disable timer
+			// Manual switch on the water pump start, disable timer
 			api.system.timer.stop(RAK_TIMER_3);
+
+			// Change report time to 1 minute
+			api.system.timer.stop(RAK_TIMER_0);
+			api.system.timer.start(RAK_TIMER_0, 60000, NULL);
+
 			MYLOG("RELAY", "Start water valve relay");
 			digitalWrite(RELAY_PUMP, HIGH);
 		}
@@ -587,12 +592,16 @@ void relay_handler(void *number)
 		{
 			MYLOG("RELAY", "Stop water valve relay");
 			digitalWrite(RELAY_PUMP, LOW);
-			// Manual handling of the water pump end, enable timer
+			// Manual switch off the water pump end, enable timer
 			if (custom_parameters.pump_on_time != 0)
 			{
 				relay_pump_status = LOW;
 				// digitalWrite(RELAY_PUMP, HIGH);
 				api.system.timer.start(RAK_TIMER_3, custom_parameters.pump_off_time, (void *)&relay_pump_status);
+
+				// Restart report time with original setting
+				api.system.timer.stop(RAK_TIMER_0);
+				api.system.timer.start(RAK_TIMER_0, custom_parameters.send_interval, NULL);
 			}
 		}
 		send_handler(NULL);
