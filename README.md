@@ -79,7 +79,8 @@ Additional functions for manual control are implemented in NodeRED:
 ### Grafana
 Grafana is used to visualize the status of the nutrition levels, the pH value in the water tank and to show the on/off times of the water pump.   
 <img src="./assets/grafana.png" alt="Grafana">
-Additionaly the user interface of NodeRED is added as an iFrame, so that the control functions can be used directly from the visualization platform.
+Additionaly the user interface of NodeRED is added as an iFrame, so that the control functions can be used directly from the visualization platform.    
+
 <img src="./assets/node-red-ui.png" alt="Grafana">
 
 ----
@@ -89,6 +90,8 @@ The WisBlock Display was added as a "nice-to-have" device to get an overview of 
 It receives the data as downlinks from NodeRED as well and shows TDS, pH, temperature and humitity levels on an e-ink display.    
 The display is assembled in a 3D printed enclosure. 
 The used hardware of the WisBlock Sensor Node can be found in the table [Display Node](#display-node)
+
+<img src="./assets/display.jpg" alt="Display">
 
 ----
 ----
@@ -214,6 +217,13 @@ The firmware for the Display Node is based on RUI3 BSP. Source code is in the [H
 ----
 
 ## Software on the WisGate Connect RAK7391
+
+### RAKPiOS
+RAKPiOS, a custom OS based on the Raspberry Pi OS that includes all of the required drivers, some security changes, helper scripts, and Docker by default. The RAKPiOS is designed for the RAKwireless WisGate Connect.
+
+[RAKPiOs Documentation](https://docs.rakwireless.com/Product-Categories/Software-APIs-and-Libraries/RAKPiOS/Overview/)
+
+<center> <img src="./assets/rakpios.png" alt="RAKPiOS"> </center>
 
 ### Docker containers
 All applications used on the WisGate Connect are installed using Docker. This makes the setup and the maintainence much simpler.    
