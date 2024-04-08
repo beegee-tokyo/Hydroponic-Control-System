@@ -18,10 +18,10 @@ As a backend control and visualization Grafana and NodeRED are used which are in
 And as a "nice-to-have" I build a simple display with an e-ink screen. It receives its data from the sensor node through NodeRED.
 
 Some images of the PoC setup:
-| Hydroponic System | Sensor |
+| Hydroponic System | WisBlock Sensor |
 | :---------------: | :-------------: |
 | <img src="./assets/hydroponic-system.jpg" alt="System"> | <img src="./assets/sensor.jpg" alt="WisBlock Sensor Node"> | 
-|  WisBlock Sensor | WisBlock Control |
+|  WisBlock Control | Pump and Valve |
 | <img src="./assets/pump-valve-control.jpg" alt="WisBlock Control Node"> | <img src="./assets/pump-valve.jpg" alt="Water pump and nutrition valve"> |
 | WisGate Connect | Display 
 | <img src="./assets/wisgate-connect.jpg" alt="Modules" width=70%> | <img src="./assets/display.jpg" alt="WisBlock Display"> | 
