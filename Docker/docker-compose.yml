@@ -177,7 +177,7 @@ services:
       DEVICE: "/dev/ttyACM1"
       RESET_GPIO: 17
       POWER_EN_GPIO: 0
-      GATEWAY_EUI: "AC1F09FFFE0920CD"
+      GATEWAY_EUI: "AC1F09FFFE000000"
       SERVER_HOST: localhost
       SERVER_PORT: 1701
       BAND: "eu_863_870"
@@ -200,7 +200,7 @@ services:
       #DEVICE: "/dev/ttyACM0"
       RESET_GPIO: 6
       POWER_EN_GPIO: 0
-      GATEWAY_EUI: "AC1F09FFFE0920CB"
+      GATEWAY_EUI: "AC1F09FFFE000000"
       SERVER_HOST: localhost
       SERVER_PORT: 1700
       BAND: "as_915_921"

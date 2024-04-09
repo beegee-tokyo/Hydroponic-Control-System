@@ -26,6 +26,10 @@ Modbus master(0, Serial1, 0); // this is master and RS-232 or USB-FTDI
 /** This is an structure which contains a query to an slave device */
 modbus_t telegram;
 
+/**
+ * @brief Initialize RS485 module
+ *
+ */
 void init_rak5802(void)
 {
 	Serial1.begin(9600); // baud-rate at 9600
@@ -33,6 +37,13 @@ void init_rak5802(void)
 	master.setTimeOut(2000); // if there is no answer in 2000 ms, roll over
 }
 
+/**
+ * @brief Read from Modbus sensor
+ *
+ * @param sensor_type LPP_PH == pH sensor, LPP_TDS == TDS sensor
+ * @return true if data was received
+ * @return false if no data was received
+ */
 bool read_rak5802(uint8_t sensor_type)
 {
 	uint32_t coll_data = 0;

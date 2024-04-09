@@ -110,7 +110,7 @@ int at_query_calib(void)
 
 /**
  * @brief Get hydroponic settings
- * 
+ *
  * @return true Settings found and read
  * @return false ---
  */
@@ -150,7 +150,7 @@ bool read_hydro_settings(void)
 
 /**
  * @brief Save hydroponic settings
- * 
+ *
  */
 void save_hydro_settings(void)
 {

@@ -68,8 +68,8 @@ bool read_rak5802(uint8_t sensor_type);
 // Hydroponic settings
 struct s_hydro_settings
 {
-	uint16_t valid_mark = 0xAA55;	 // Validity marker
-	uint32_t nutrition_level = 1000; // Default nutrition level
+	uint16_t valid_mark = 0xAA55;	   // Validity marker
+	uint32_t nutrition_level = 1000;   // Default nutrition level
 	uint16_t calibration_factor = 100; // Calibration factor (x100)
 };
 

@@ -75,10 +75,10 @@ void read_rak1901(void)
  */
 void get_rak1901_values(float *values)
 {
-		values[0] = g_last_temp;
-		values[1] = g_last_humid;
-		values[2] = 1000.0; // no sensor available
-		return;
+	values[0] = g_last_temp;
+	values[1] = g_last_humid;
+	values[2] = 1000.0; // no sensor available
+	return;
 }
 
 /**
@@ -93,7 +93,7 @@ void startup_rak1901(void)
 
 /**
  * @brief Put the RAK1901 into sleep mode
- * 
+ *
  */
 void shutdown_rak1901(void)
 {

@@ -10,14 +10,22 @@
  */
 #include "main.h"
 
+/** Analog in for TDS sensor */
 #define TdsSensorPin WB_A1
-#define VREF 3.0		   // analog reference voltage(Volt) of the ADC
-#define SCOUNT 50		   // sum of sample point
+/** Reference voltage of AD converter */
+#define VREF 3.0 // analog reference voltage(Volt) of the ADC
+/** Number of readings */
+#define SCOUNT 50 // sum of sample point
+/** Buffer for readings */
 int analog_buffer[SCOUNT]; // store the analog value in the array, read from ADC
-int analog_bufferTemp[SCOUNT];
-int analog_bufferIndex = 0;
-float average_voltage = 0, tds_value = 0, temperature = 25;
+/** Average voltage readings */
+float average_voltage = 0;
+/** Calculated TDS value */
+float tds_value = 0;
+/** Water temperature */
+float temperature = 25;
 
+// Forward declaration
 int getMedianNum(int bArray[], int iFilterLen);
 
 /**
@@ -53,11 +61,11 @@ bool read_tds(bool add_to_payload)
 		delay(100);
 	}
 
-	average_voltage = getMedianNum(analog_buffer, SCOUNT) * (float)VREF / 4096.0;																										  // 12bit resolution
-	MYLOG("TDS", "Avg Voltage %.2fV", average_voltage);																																	  // 16 bit resolution
-	float compensation_coefficient = 1.0 + 0.02 * (temperature - 25.0);																													  // temperature compensation formula: fFinalResult(25^C) = fFinalResult(current)/(1.0+0.02*(fTP-25.0));
-	float compensation_voltage = average_voltage / compensation_coefficient;																											  // temperature compensation
-	tds_value = (133.42 * compensation_voltage * compensation_voltage * compensation_voltage - 255.86 * compensation_voltage * compensation_voltage + 857.39 * compensation_voltage) * ((float)g_hydro_settings.calibration_factor/100.0); // 0.5 in code, 1 in library ????? convert voltage value to tds value
+	average_voltage = getMedianNum(analog_buffer, SCOUNT) * (float)VREF / 4096.0;																																							 // 12bit resolution
+	MYLOG("TDS", "Avg Voltage %.2fV", average_voltage);																																														 // 16 bit resolution
+	float compensation_coefficient = 1.0 + 0.02 * (temperature - 25.0);																																										 // temperature compensation formula: fFinalResult(25^C) = fFinalResult(current)/(1.0+0.02*(fTP-25.0));
+	float compensation_voltage = average_voltage / compensation_coefficient;																																								 // temperature compensation
+	tds_value = (133.42 * compensation_voltage * compensation_voltage * compensation_voltage - 255.86 * compensation_voltage * compensation_voltage + 857.39 * compensation_voltage) * ((float)g_hydro_settings.calibration_factor / 100.0); // 0.5 in code, 1 in library ????? convert voltage value to tds value
 
 	MYLOG("TDS", "Avg TDS %.2fppm", tds_value);
 	MYLOG("TDS", "Req TDS %ldppm", g_hydro_settings.nutrition_level);
@@ -115,7 +123,7 @@ int getMedianNum(int bArray[], int iFilterLen)
 }
 
 /**++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/**++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/** Using the dfRobot Grafity library for the TDS sensor --- didn't work               */
 /**++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 // #include <GravityTDS.h>

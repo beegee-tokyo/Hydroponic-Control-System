@@ -6,6 +6,7 @@
  * @contact     sammarcoarmengol@gmail.com
  * @contribution Helium6072
  * @contribution gabrielsan
+ * @contribution beegee-tokyo
  *
  * @description
  *  Arduino library for communicating with Modbus devices

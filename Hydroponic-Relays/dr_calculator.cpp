@@ -4,9 +4,9 @@
  * @brief Calculate the required datarate from the payload size
  * @version 0.1
  * @date 2023-01-06
- * 
+ *
  * @copyright Copyright (c) 2023
- * 
+ *
  */
 #include "app.h"
 
@@ -28,8 +28,8 @@ uint16_t *region_map[12] = {in865_eu433_ru864_eu868_ps, cn470_kr920_ps, in865_eu
 /**
  * @brief Get the minimum datarate based on region and required payload size
  *
- * @param region LoRaWAN region  
- *               0 = EU433, 1 = CN470, 2 = RU864, 3 = IN865, 4 = EU868, 5 = US915, 
+ * @param region LoRaWAN region
+ *               0 = EU433, 1 = CN470, 2 = RU864, 3 = IN865, 4 = EU868, 5 = US915,
  *               6 = AU915, 7 = KR920, 8 = AS923-1 , 9 = AS923-2 , 10 = AS923-3 , 11 = AS923-4)
  * @param payload_size required payload size
  * @return uint8_t datarate 0 to 15 or 16 if no matching DR could be found

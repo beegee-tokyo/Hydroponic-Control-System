@@ -1,11 +1,11 @@
 /**
  * @file RUI3-Modular.ino
  * @author Bernd Giesecke (bernd@giesecke.tk)
- * @brief RUI3 based code for low power practice
+ * @brief Hydroponic Control Node
  * @version 0.1
- * @date 2023-03-29
+ * @date 2024-04-09
  *
- * @copyright Copyright (c) 2023
+ * @copyright Copyright (c) 2024
  *
  */
 #include "app.h"
@@ -388,11 +388,19 @@ void cad_cb(bool result)
 	MYLOG("CAD-P2P-CB", "P2P CAD reports %s", result ? "activity" : "no activity");
 }
 
+/**
+ * @brief Callback for BLE disconnect
+ * 
+ */
 void cb_ble_disconnect(void)
 {
 	api.system.timer.start(RAK_TIMER_4, 500, NULL);
 }
 
+/**
+ * @brief Restart BLE advertising
+ * 
+ */
 void ble_restart_adv(void *)
 {
 	MYLOG("BLE-DIS-CB", "Restart advertising");

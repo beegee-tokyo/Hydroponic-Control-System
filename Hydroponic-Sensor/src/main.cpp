@@ -1,11 +1,11 @@
 /**
  * @file main.cpp
  * @author Bernd Giesecke (bernd@giesecke.tk)
- * @brief Low power test
+ * @brief Hydroponic Sensor functions
  * @version 0.1
- * @date 2023-02-14
+ * @date 2024-04-09
  *
- * @copyright Copyright (c) 2023
+ * @copyright Copyright (c) 2024
  *
  */
 #include "main.h"
@@ -189,13 +189,6 @@ void ble_data_handler(void)
 {
 	if (g_enable_ble)
 	{
-		/**************************************************************/
-		/**************************************************************/
-		/// \todo BLE UART data arrived
-		/// \todo or forward them to the AT command interpreter
-		/// \todo parse them here
-		/**************************************************************/
-		/**************************************************************/
 		if ((g_task_event_type & BLE_DATA) == BLE_DATA)
 		{
 			MYLOG("AT", "RECEIVED BLE");
@@ -238,12 +231,6 @@ void lora_data_handler(void)
 	// LoRa data handling
 	if ((g_task_event_type & LORA_DATA) == LORA_DATA)
 	{
-		/**************************************************************/
-		/**************************************************************/
-		/// \todo LoRa data arrived
-		/// \todo parse them here
-		/**************************************************************/
-		/**************************************************************/
 		g_task_event_type &= N_LORA_DATA;
 		MYLOG("RX_CB", "Received package over LoRa");
 		MYLOG("RX_CB", "Last RSSI %d", g_last_rssi);
@@ -258,7 +245,7 @@ void lora_data_handler(void)
 		MYLOG("RX_CB", "%s", log_buff);
 
 		if (g_last_fport == 11)
-		{ 
+		{
 			// Check data size
 			if (g_rx_data_len > 3)
 			{
@@ -291,23 +278,23 @@ void lora_data_handler(void)
 							save_hydro_settings();
 						}
 						break;
-						case CALIB_FACTOR:
-							if (g_rx_data_len != 5)
-							{
-								MYLOG("RX_CB", "Wrong setup size");
-							}
+					case CALIB_FACTOR:
+						if (g_rx_data_len != 5)
+						{
+							MYLOG("RX_CB", "Wrong setup size");
+						}
 
-							old_value_1 = g_hydro_settings.calibration_factor;
-							new_value_1 = g_rx_lora_data[3] << 8;
-							new_value_1 |= g_rx_lora_data[4] << 0;
-							MYLOG("RX_CB", "New calibration factor %ld", new_value_1);
-							// Save custom settings if needed
-							if (old_value_1 != new_value_1)
-							{
-								g_hydro_settings.calibration_factor = new_value_1;
-								save_hydro_settings();
-							}
-							break;
+						old_value_1 = g_hydro_settings.calibration_factor;
+						new_value_1 = g_rx_lora_data[3] << 8;
+						new_value_1 |= g_rx_lora_data[4] << 0;
+						MYLOG("RX_CB", "New calibration factor %ld", new_value_1);
+						// Save custom settings if needed
+						if (old_value_1 != new_value_1)
+						{
+							g_hydro_settings.calibration_factor = new_value_1;
+							save_hydro_settings();
+						}
+						break;
 					default:
 						MYLOG("RX_CB", "Wrong setup type");
 						break;

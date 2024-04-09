@@ -102,61 +102,10 @@ The used hardware of the WisBlock Sensor Node can be found in the table [Display
 ----
 ----
 
-## Hardware used
-
-### Sensor Node
-
-| [RAK19011 WisBlock Base Board with power slot](https://store.rakwireless.com/products/rak19011-dual-io-base-board-with-power-slot) | <img src="./assets/rak19011.png" alt="Base Board" width="30%"> |
-| --- | :-: |
-| [RAK19016 5-24V Power Slot Module](https://store.rakwireless.com/products/rak19016-5-24v-power-slot-module) | <img src="./assets/rak19016.png" alt="Power Module" width="15%"> |
-| [RAK4631 Android Core Module](https://store.rakwireless.com/products/rak4631-lpwan-node) | <img src="./assets/rak4631.png" alt="Core Module" width="15%"> |
-| [RAK5802 RS485 IO Module (for pH and TDS sensor)](https://store.rakwireless.com/products/rak5802-rs485-interface) | <img src="./assets/rak5802.png" alt="RS485 Module" width="15%"> |
-| [RAK5804 IO Module (temporary for dfRobot TDS sensor)](https://store.rakwireless.com/products/rak5804-wisblock-interface-extension-board) | <img src="./assets/rak5804.png" alt="IO Module" width="15%"> |
-| [Unify Enclosure ](https://store.rakwireless.com/products/unify-enclosure-ip67-180-130-60mm) | <img src="./assets/unify-large.png" alt="Unify Enclosure" width="15%"> |
-| dfRobot TDS sensor (temporary) | will be replaced by SensorHub TDS Water Sensor |
-| 12V supply | third party 110/220V to 12V regulator |
-
-----
-
-### Control Node
-
-| [RAK19001 WisBlock Base Board](https://store.rakwireless.com/products/rak19011-dual-io-base-board-with-power-slot) | <img src="./assets/rak19001.png" alt="Base Board" width="30%"> |
-| --- | :-: |
-| [RAK4631 RUI3 Core Module](https://store.rakwireless.com/products/rak4631-lpwan-node) | <img src="./assets/rak4631.png" alt="Core Module" width="15%"> |
-| 2 x [RAK13007 220V Relay Module (water pump and nutrition valve)](https://store.rakwireless.com/products/rak13007-wisblock-relay) | <img src="./assets/rak13007.png" alt="Relay Module" width="15%"> |
-| [Unify Enclosure ](https://store.rakwireless.com/products/unify-enclosure-ip67-180-130-60mm) | <img src="./assets/unify-large.png" alt="Unify Enclosure" width="15%"> |
-| 5V/12V supply | third party 110/220V to 5V and 12V regulator |
-
-----
-
-### Display Node
-
-| [RAK19007 WisBlock Base Board](https://store.rakwireless.com/products/rak19007-wisblock-base-board-2nd-gen) | <img src="./assets/rak19007.png" alt="Base Board" width="30%"> |
-| --- | :-: |
-| [RAK3372 RUI3 Core Module](https://store.rakwireless.com/products/wisblock-core-module-rak3372) | <img src="./assets/rak3372.png" alt="Core Module" width="15%"> |
-| [RAK14000 E-Paper Display Module](https://store.rakwireless.com/products/wisblock-epd-module-rak14000) | <img src="./assets/rak14000.png" alt="E-Ink display" width="15%"> |
-| 3D printed enclosure | <img src="./assets/display.jpg" alt="Display" width="15%"> |
-| 500mA Battery | power supply, lasts ~?? month without recharging with screen update every 5 minutes |
-
-----
-
-### WisGate Connect
-
-| [RAK7391 WisGate Connect](https://store.rakwireless.com/products/wisgate-connect-smart-building-edge-gateway-for-smart-building-smart-soho-solutions) | <img src="./assets/rak7391.png" alt="Wisgate Connect" width="30%"> |
-| --- | :-: |
-| [RAK5146 USB EU868](https://store.rakwireless.com/products/wislink-concentrator-module-sx1303-rak5146-lorawan?variant=39677269213382) | <img src="./assets/rak5146.png" alt="Core Module" width="15%"> |
-| [RAK2287 SPI AS923-3](https://store.rakwireless.com/products/wislink-concentrator-module-sx1302-rak2287-lorawan?variant=41826859319494) | <img src="./assets/rak2287.png" alt="Core Module" width="15%"> |
-
-# ⚠️ IMPORTANT ⚠️
-This PoC is using two concentrators (RAK5146 and RAK2287) only for testing purposes.     
-_**Only one concentrator module is required, matching with your local LoRaWAN region!**_
-
-----
-
 ## WisBlock Node Software used
 
 ### WisBlock Sensor Node
-The firmware for the Sensor Node is based on Arduino BSP and is using the WisBlock-API-V2 for low power and LoRa/LoRaWAN support. Source code is in the [Hydroponic-Sensor] folder(./Hydroponic-Sensor).    
+The firmware for the Sensor Node is based on Arduino BSP and is using the WisBlock-API-V2 for low power and LoRa/LoRaWAN support. Source code is in the [Hydroponic-Sensor folder](./Hydroponic-Sensor).    
 
 The WisBlock Sensor Node has two downlink commands to change settings from NodeRED without connecting to the device physically. One command is to set the nutrition level treshold (when to add additional nutrition), the other one is to set the calibrate value the TDS sensor (required for dfRobot sensor).    
 The structure of the downlinks is fixed as:
@@ -166,7 +115,7 @@ The structure of the downlinks is fixed as:
 | 0xAA 0x55 | 0x01 | 4 bytes nutrition treshold value, MSB first |
 | 0xAA 0x55 | 0x02 | 2 bytes calibration factor, multiplied by 100, MSB first |
 
-Examples:
+Examples:    
 Payload `{0xAA, 0x55, 0x01, 0x00, 0x00, 0x03, 0x20}` will set the nutrition level treshold to 800 (0x0320).    
 Payload `{0xAA, 0x55, 0x02, 0x00, 0x38}` will set the calibration factor to 0.56 (0.56 * 100 == 0x0038).
 
@@ -175,7 +124,7 @@ Payload `{0xAA, 0x55, 0x02, 0x00, 0x38}` will set the calibration factor to 0.56
 ----
 
 ### WisBlock Control Node
-The firmware for the Control Node is based on RUI3 BSP. Source code is in the [Hydroponic-Relays] folder(./Hydroponic-Relays).    
+The firmware for the Control Node is based on RUI3 BSP. Source code is in the [Hydroponic-Relays folder](./Hydroponic-Relays).    
 
 The WisBlock Control Node has three downlink commands to remotely control the water pump, the nutrition valve and the pump on/off times.    
 They are devided into two groups:    
@@ -192,7 +141,7 @@ The structure of the control commands is fixed as:
 | 0xAA 0x55 | 0x01 | 0x01 | Nutrition valve open for 10 seconds |
 | 0xAA 0x55 | 0x01 | 0x03 | Nutrition valve open for 30 seconds |
 
-Examples:
+Examples:    
 Payload `{0xAA, 0x55, 0x00, 0x01`} will switch the pump on and disable the timer that is usually controlling the on/off times.    
 Payload `{0xAA, 0x55, 0x01, 0x03}` will open the nutrition valve for 30 seconds.
 
@@ -204,7 +153,7 @@ The structure for the setup commands is fixed as:
 | --- | --- | --- |
 | 0xAA 0x55 | 0x01 | 4 bytes on time in seconds, 4 bytes off time in seconds, MSB first |
 
-Examples:
+Examples:    
 Payload `{0xAA, 0x55, 0x01, 0x00, 0x00, 0x02, 0x58, 0x00, 0x00, 0x0B, 0xB8}` sets the on time to 600 seconds (10 minutes) and the off time to 3000 seconds (50 minutes).
 
 ⚠️ The downlink _**MUST**_ be send on fPort 11! ⚠️
@@ -212,8 +161,9 @@ Payload `{0xAA, 0x55, 0x01, 0x00, 0x00, 0x02, 0x58, 0x00, 0x00, 0x0B, 0xB8}` set
 ----
 
 ### WisBlock Display Node
-The firmware for the Display Node is based on RUI3 BSP. Source code is in the [Hydroponic-Display] folder(./Hydroponic-Display).    
+The firmware for the Display Node is based on RUI3 BSP. Source code is in the [Hydroponic-Display folder](./Hydroponic-Display).    
 
+----
 ----
 
 ## Software on the WisGate Connect RAK7391
@@ -227,7 +177,7 @@ RAKPiOS, a custom OS based on the Raspberry Pi OS that includes all of the requi
 
 ### Docker containers
 All applications used on the WisGate Connect are installed using Docker. This makes the setup and the maintainence much simpler.    
-For the installation of the application a docker-compose.yml file was used. The yaml file can be found in [docker-compose.yml](./docker-compose.yml).    
+For the installation of the application a docker-compose.yml file was used. The yaml file can be found in [docker-compose.yml](./Docker/docker-compose.yml).    
 
 ⚠️This yaml file works for my installation, but you should carefully adjust it to your requirments. Special the udp-packet-forwarder needs to be updated with new gateway EUI's and their location info.⚠️    
 
@@ -266,7 +216,7 @@ For the LoRaWAN server a Docker container with Chirpstack V4 is used. The LNS is
 
 For the devices, two device profiles are used. One is for a Class C, which is used for the WisBlock Control Node, as it has to receive downlinks (commands) immediately. The other one is for Class A devices and is used for the WisBlock Sensor Node and the Display Node.    
 
-Both device profiles are using the same uplink decoders, the uplinks are formatted in an extend Cayenne LPP format. The usage of an uplink decoder allows to have the decoded data in the MQTT messages. This makes it easier in NodeRED and Grafana to analyze and visualize the received data. The decoder can be found in [Chirpstack-Decoder.js](./Chirpstack-Decoder.js).     
+Both device profiles are using the same uplink decoders, the uplinks are formatted in an extend Cayenne LPP format. The usage of an uplink decoder allows to have the decoded data in the MQTT messages. This makes it easier in NodeRED and Grafana to analyze and visualize the received data. The decoder can be found in [Chirpstack-Decoder.js](./Chirpstack/Chirpstack-Decoder.js).     
 
 In addition, the application is setup with an _**influxDB v2**_ integration to forward the data into a database.    
 <center> <img src="./assets/chirpstack-integration.png" alt="CS Integration"> </center>    
@@ -285,7 +235,7 @@ from(bucket: "RAKwireless")
   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
   |> filter(fn: (r) => r["_measurement"] == "device_frmpayload_data_concentration_64")
   |> filter(fn: (r) => r["_field"] == "value")
-  |> filter(fn: (r) => r["dev_eui"] == "ac1f09fffe0cf054")
+  |> filter(fn: (r) => r["dev_eui"] == "ac1f09fffe000000")
   |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
   |> yield(name: "last")
 ```
@@ -390,7 +340,7 @@ In this case the MQTT publish message is prepared here. This published message g
 For the MQTT publishing multiple fields are required and added to msg[]:    
 | Field | Content |
 | --- | --- |
-| "payload" | DevEUI of the receiving device, setup of confirmed/unconfirmed packet, fPort to be used, the LoRaWAN payload, encoded with Base64 |
+| "payload" | - DevEUI of the receiving device, setup of confirmed/unconfirmed packet</br>- fPort to be used</br> - the LoRaWAN payload, encoded with Base64 |
 | "topic" | The topic the data will be published to. It requires the Chirpstack Application ID, the DevEUI and the task to be performed by Chirpstack, here "/command/down" will start a downlink to the device |
 | "qos" | With which QOS level the packet should be published |
 
@@ -505,6 +455,19 @@ The flow is very simple, from the UI button, the MQTT payload is created and the
 
 <center> <img src="./assets/node-red-nutrition-refill-flow.png" alt="Check message"> </center> 
 
+```js
+node.warn("TDS low, open valve " + msg['tds_value']);
+msg['todo'] = "Downlink";
+msg['payload'] = "{\"devEui\":\"" + global.get("relay_dev_eui") + "\", \"confirmed\":false,\"fPort\":10,\"data\":\"qlUDAQ==\"}" // pump long on AA550301
+msg['topic'] = "application/" + global.get("app_id") + "/device/" + global.get("relay_dev_eui") + "/command/down";
+msg['qos'] = 2;
+
+node.warn("Payload: " + msg.payload);
+node.warn("Topic: " + msg.topic);
+
+return msg;
+```
+
 #### Water pump override
 To override the timer settings on the WisBlock Control Node, the water pump can be manually switched on. This disables the timer control of the pump until the pump is manually switched off again.    
 The water pump is controlled by a toggle switch in the UI:
@@ -513,14 +476,115 @@ The water pump is controlled by a toggle switch in the UI:
 
 <center> <img src="./assets/node-red-pump-control-flow.png" alt="Check message"> </center> 
 
+```js
+node.warn("Received: " + msg.payload);
+switch (msg.payload)
+{
+    case true:
+        node.warn("Pump On");
+        msg.bvalue = Buffer.from([0xaa, 0x55, 0x00, 0x01]);
+        break;
+    case false:
+        node.warn("Pump Off");
+        msg.bvalue = Buffer.from([0xaa, 0x55, 0x00, 0x00]);
+        break;
+}
+return msg;
+```
+
 #### Water pump on/off time settings
-The timer based on/off control of the water pump can be controlled by the second control widget in the UI. The on and off times are set in minutes.    
+The timer based on/off control of the water pump can be set by the second control widget in the UI. The on and off times are set in minutes.    
 As the WisBlock Control Node expects the timer values in seconds, they are converted from minutes to seconds before the downlink to the device is created.    
 The timer settings are stored in the flash of the device and reused after a power-up or reset.    
 
 <center> <img src="./assets/node-red-pump-time-control.png" alt="Check message"> </center> 
 
+```js
+if (typeof (msg.payload.on_time) != "undefined") {
+    if (typeof (msg.payload.off_time) != "undefined") {
+        if ((msg.payload.on_time > msg.payload.off_time) || (msg.payload.off_time < 15) || (msg.payload.on_time < 5)) {
+            node.warn("Wrong times");
+            msg.todo = "None";
+            msg.payload = "Wrong times";
 
+        } else {
+            msg.payload.on_time = msg.payload.on_time * 60;
+            msg.payload.off_time = msg.payload.off_time * 60;
+            msg.bvalue = Buffer.from([0xaa, 0x55, 0x00, (msg.payload.on_time & 0xff000000) >> 24,
+                (msg.payload.on_time & 0x00ff0000) >> 16, (msg.payload.on_time & 0x0000ff00) >> 8,
+                (msg.payload.on_time & 0x000000ff), (msg.payload.off_time & 0xff000000) >> 24,
+                (msg.payload.off_time & 0x00ff0000) >> 16, (msg.payload.off_time & 0x0000ff00) >> 8,
+                (msg.payload.off_time & 0x000000ff)]);
+            msg.todo = "Downlink";
+            node.warn("Valid times found");
+        }
+    } else {
+        node.warn("No OFF time");
+        msg.todo = "None";
+        msg.payload = "No Off Time";
+    }
+} else {
+    node.warn("No ON time");
+    msg.todo = "None";
+    msg.payload = "No On Time";
+}
+
+return msg;
+```
+
+----
+----
+
+## Hardware used
+
+### Sensor Node
+
+| [RAK19011 WisBlock Base Board with power slot](https://store.rakwireless.com/products/rak19011-dual-io-base-board-with-power-slot) | <img src="./assets/rak19011.png" alt="Base Board" width="30%"> |
+| --- | :-: |
+| [RAK19016 5-24V Power Slot Module](https://store.rakwireless.com/products/rak19016-5-24v-power-slot-module) | <img src="./assets/rak19016.png" alt="Power Module" width="15%"> |
+| [RAK4631 Android Core Module](https://store.rakwireless.com/products/rak4631-lpwan-node) | <img src="./assets/rak4631.png" alt="Core Module" width="15%"> |
+| [RAK5802 RS485 IO Module (for pH and TDS sensor)](https://store.rakwireless.com/products/rak5802-rs485-interface) | <img src="./assets/rak5802.png" alt="RS485 Module" width="15%"> |
+| [RAK5804 IO Module (temporary for dfRobot TDS sensor)](https://store.rakwireless.com/products/rak5804-wisblock-interface-extension-board) | <img src="./assets/rak5804.png" alt="IO Module" width="15%"> |
+| [Unify Enclosure ](https://store.rakwireless.com/products/unify-enclosure-ip67-180-130-60mm) | <img src="./assets/unify-large.png" alt="Unify Enclosure" width="15%"> |
+| dfRobot TDS sensor (temporary) | will be replaced by SensorHub TDS Water Sensor |
+| 12V supply | third party 110/220V to 12V regulator |
+
+----
+
+### Control Node
+
+| [RAK19001 WisBlock Base Board](https://store.rakwireless.com/products/rak19011-dual-io-base-board-with-power-slot) | <img src="./assets/rak19001.png" alt="Base Board" width="30%"> |
+| --- | :-: |
+| [RAK4631 RUI3 Core Module](https://store.rakwireless.com/products/rak4631-lpwan-node) | <img src="./assets/rak4631.png" alt="Core Module" width="15%"> |
+| 2 x [RAK13007 220V Relay Module (water pump and nutrition valve)](https://store.rakwireless.com/products/rak13007-wisblock-relay) | <img src="./assets/rak13007.png" alt="Relay Module" width="15%"> |
+| [Unify Enclosure ](https://store.rakwireless.com/products/unify-enclosure-ip67-180-130-60mm) | <img src="./assets/unify-large.png" alt="Unify Enclosure" width="15%"> |
+| 5V/12V supply | third party 110/220V to 5V and 12V regulator |
+
+----
+
+### Display Node
+
+| [RAK19007 WisBlock Base Board](https://store.rakwireless.com/products/rak19007-wisblock-base-board-2nd-gen) | <img src="./assets/rak19007.png" alt="Base Board" width="30%"> |
+| --- | :-: |
+| [RAK3372 RUI3 Core Module](https://store.rakwireless.com/products/wisblock-core-module-rak3372) | <img src="./assets/rak3372.png" alt="Core Module" width="15%"> |
+| [RAK14000 E-Paper Display Module](https://store.rakwireless.com/products/wisblock-epd-module-rak14000) | <img src="./assets/rak14000.png" alt="E-Ink display" width="15%"> |
+| 3D printed enclosure | <img src="./assets/display.jpg" alt="Display" width="15%"> |
+| 500mA Battery | power supply, lasts ~?? month without recharging with screen update every 5 minutes |
+
+----
+
+### WisGate Connect
+
+| [RAK7391 WisGate Connect](https://store.rakwireless.com/products/wisgate-connect-smart-building-edge-gateway-for-smart-building-smart-soho-solutions) | <img src="./assets/rak7391.png" alt="Wisgate Connect" width="30%"> |
+| --- | :-: |
+| [RAK5146 USB EU868](https://store.rakwireless.com/products/wislink-concentrator-module-sx1303-rak5146-lorawan?variant=39677269213382) | <img src="./assets/rak5146.png" alt="Core Module" width="15%"> |
+| [RAK2287 SPI AS923-3](https://store.rakwireless.com/products/wislink-concentrator-module-sx1302-rak2287-lorawan?variant=41826859319494) | <img src="./assets/rak2287.png" alt="Core Module" width="15%"> |
+
+# ⚠️ IMPORTANT ⚠️
+This PoC is using two concentrators (RAK5146 and RAK2287) only for testing purposes.     
+_**Only one concentrator module is required, matching with your local LoRaWAN region!**_
+
+----
 ----
 
 # LoRa® is a registered trademark or service mark of Semtech Corporation or its affiliates. 

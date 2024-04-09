@@ -4,9 +4,9 @@
  * @brief Defines, includes, global definitions
  * @version 0.1
  * @date 2023-05-04
- * 
+ *
  * @copyright Copyright (c) 2023
- * 
+ *
  */
 #include <Arduino.h>
 
@@ -50,7 +50,7 @@ extern custom_param_s custom_parameters;
 // LoRaWAN stuff
 #include "wisblock_cayenne.h"
 // Cayenne LPP Channel numbers per sensor value
-#define LPP_CHANNEL_BATT 1	// Base Board
+#define LPP_CHANNEL_BATT 1 // Base Board
 
 // EPD
 void status_rak14000(void);
@@ -60,6 +60,7 @@ void rak14000_logo(int16_t x, int16_t y);
 void clear_rak14000(void);
 void refresh_rak14000(void);
 
+// Sensor values
 extern float ph_level;
 extern uint16_t tds_level;
 extern float temp_level;

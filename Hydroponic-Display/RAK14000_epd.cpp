@@ -14,21 +14,34 @@
 
 #include "RAK14000_epd.h"
 
+// Button definitions (unused)
 #define LEFT_BUTTON WB_IO6
 #define MIDDLE_BUTTON WB_IO5
 #define RIGHT_BUTTON WB_IO3
 
+/** Buffer for display text */
 char disp_text[60];
 
+/** Buffer for image */
 unsigned char image[4000];
+
+/** Display instance */
 EPD_213_BW epd;
+/** Paint instance */
 Paint paint(image, 122, 250);
 
+/** Background color definition */
 uint16_t bg_color = UNCOLORED;
+/** Foreground color definition*/
 uint16_t txt_color = COLORED;
 
+// Forward declaration
 void rak14000_text(int16_t x, int16_t y, char *text, uint16_t text_color, uint32_t text_size);
 
+/**
+ * @brief Show LoRaWAN connection status
+ *
+ */
 void status_rak14000(void)
 {
 	if (!api.lorawan.njs.get())
@@ -43,6 +56,10 @@ void status_rak14000(void)
 	}
 }
 
+/**
+ * @brief Initialize the e-ink display
+ *
+ */
 void init_rak14000(void)
 {
 	// pinMode(POWER_ENABLE, INPUT_PULLUP);
@@ -58,7 +75,6 @@ void init_rak14000(void)
 	// pinMode(RIGHT_BUTTON, INPUT_PULLUP);
 
 	clear_rak14000();
-	// paint.drawBitmap(5, 5, (uint8_t *)rak_img, 59, 56);
 	rak14000_logo(5, 5);
 	rak14000_text(60, 65, "RAKWireless", (uint16_t)txt_color, 2);
 	rak14000_text(60, 85, "IoT Made Easy", (uint16_t)txt_color, 2);
@@ -70,6 +86,12 @@ void init_rak14000(void)
 	digitalWrite(POWER_ENABLE, LOW);
 }
 
+/**
+ * @brief Draw the RAK logo
+ *
+ * @param x x-pos (left top)
+ * @param y y-pos (left top)
+ */
 void rak14000_logo(int16_t x, int16_t y)
 {
 	paint.drawBitmap(x, y, (uint8_t *)rak_img, 59, 56);
@@ -98,14 +120,21 @@ void rak14000_text(int16_t x, int16_t y, char *text, uint16_t text_color, uint32
 	paint.DrawStringAt(x, y, text, use_font, COLORED);
 }
 
+/**
+ * @brief Clear the display
+ *
+ */
 void clear_rak14000(void)
 {
 	paint.SetRotate(ROTATE_270);
 	epd.Init(FULL);
-	// epd.Clear();
 	paint.Clear(UNCOLORED);
 }
 
+/**
+ * @brief Refresh the screen content
+ *
+ */
 void refresh_rak14000(void)
 {
 	// Clear display buffer

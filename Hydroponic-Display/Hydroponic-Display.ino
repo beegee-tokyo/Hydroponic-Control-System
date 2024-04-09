@@ -1,17 +1,14 @@
 /**
  * @file RUI3-Modular.ino
  * @author Bernd Giesecke (bernd@giesecke.tk)
- * @brief RUI3 based code for low power practice
+ * @brief Hydroponic system Display Node
  * @version 0.1
- * @date 2023-03-29
+ * @date 2024-04-09
  *
- * @copyright Copyright (c) 2023
+ * @copyright Copyright (c) 2024
  *
  */
 #include "app.h"
-
-// Enable (1) or disable (0) encryption in P2P
-#define USE_ENCRYPT 0
 
 /** Packet is confirmed/unconfirmed (Set with AT commands) */
 bool g_confirmed_mode = false;
@@ -44,9 +41,6 @@ bool has_tds = false;
 bool has_temp = false;
 bool has_humid = false;
 bool has_water_level = false;
-
-/** P2P Encryption key */
-uint8_t node_encrypt_key[16] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
 
 /**
  * @brief Callback after join request cycle
@@ -189,11 +183,7 @@ void sendCallback(int32_t status)
  */
 void recv_cb(rui_lora_p2p_recv_t data)
 {
-#if USE_ENCRYPT == 1
-	MYLOG("RX-P2P-CB", "Encrypted P2P RX, RSSI %d, SNR %d", data.Rssi, data.Snr);
-#else
 	MYLOG("RX-P2P-CB", "P2P RX, RSSI %d, SNR %d", data.Rssi, data.Snr);
-#endif
 
 #if MY_DEBUG > 0
 	for (int i = 0; i < data.BufferSize; i++)
@@ -202,6 +192,72 @@ void recv_cb(rui_lora_p2p_recv_t data)
 	}
 	Serial.print("\r\n");
 #endif
+
+	// Check data size
+	if (data.BufferSize == 11)
+	{
+		// Check for valid command sequence
+		if ((data.Buffer[0] == 0xAA) && (data.Buffer[1] == 0x55) && (data.Buffer[2] == 0xFF))
+		{
+			tds_level = data.Buffer[3] << 8;
+			tds_level |= data.Buffer[4];
+			if (tds_level != 0)
+			{
+				has_tds = true;
+			}
+			else
+			{
+				has_tds = false;
+			}
+			int16_t int_value = data.Buffer[5] << 8;
+			int_value |= data.Buffer[6];
+			if (int_value != 0)
+			{
+				has_ph = true;
+				ph_level = (float)int_value / 10.0;
+			}
+			else
+			{
+				has_ph = false;
+				ph_level = 0.0;
+			}
+			int_value = data.Buffer[7] << 8;
+			int_value |= data.Buffer[8];
+			if (int_value != 0)
+			{
+				has_temp = true;
+				temp_level = (float)int_value / 10.0;
+			}
+			else
+			{
+				has_temp = false;
+				temp_level = 0.0;
+			}
+			int_value = data.Buffer[9] << 8;
+			int_value |= data.Buffer[10];
+			if (int_value != 0)
+			{
+				has_humid = true;
+				humid_level = (float)int_value / 10.0;
+			}
+			else
+			{
+				has_humid = false;
+				humid_level = 0.0;
+			}
+
+			digitalWrite(WB_IO2, HIGH);
+			api.system.timer.start(RAK_TIMER_1, 500, NULL);
+		}
+		else
+		{
+			MYLOG("RX-CB", "Wrong header");
+		}
+	}
+	else
+	{
+		MYLOG("RX-CB", "Wrong size");
+	}
 
 	tx_active = false;
 }
@@ -254,10 +310,6 @@ void setup()
 		api.lora.registerPRecvCallback(recv_cb);
 		api.lora.registerPSendCallback(send_cb);
 		api.lora.registerPSendCADCallback(cad_cb);
-#if USE_ENCRYPT == 1
-		api.lora.enckey.set(node_encrypt_key, 16);
-		api.lora.encry.set(1);
-#endif
 	}
 
 	pinMode(LED_GREEN, OUTPUT);
@@ -320,14 +372,9 @@ void setup()
 	{
 		digitalWrite(LED_BLUE, LOW);
 
-		// api.lora.precv(65533);
+		api.lora.precv(65533);
 
 		sensor_handler(NULL);
-	}
-	else
-	{
-		// Enable permanent linkcheck
-		// api.lorawan.linkcheck.set(2);
 	}
 
 	if (api.lorawan.nwm.get() == 1)
@@ -357,6 +404,10 @@ void setup()
 #endif
 }
 
+/**
+ * @brief Update the E-Ink display
+ *
+ */
 void display_handler(void *)
 {
 	MYLOG("DISPLAY", "TDS: %dppm", tds_level);
@@ -364,6 +415,7 @@ void display_handler(void *)
 	MYLOG("DISPLAY", "T:   %.1f", temp_level);
 	MYLOG("DISPLAY", "H:   %.1f", humid_level);
 
+	// Update display
 	refresh_rak14000();
 
 	digitalWrite(WB_IO2, LOW);
@@ -410,7 +462,6 @@ void sensor_handler(void *)
 void loop()
 {
 	api.system.sleep.all();
-	// api.system.scheduler.task.destroy();
 }
 
 /**
@@ -455,11 +506,7 @@ void send_packet(void)
 
 		if (api.lora.psend(g_solution_data.getSize(), g_solution_data.getBuffer(), g_use_cad))
 		{
-#if USE_ENCRYPT == 1
-			MYLOG("UPLINK", "Enrypted P2P Packet enqueued");
-#else
 			MYLOG("UPLINK", "P2P Packet enqueued");
-#endif
 		}
 		else
 		{

@@ -4,9 +4,9 @@
  * @brief Defines, includes, global definitions
  * @version 0.1
  * @date 2023-05-04
- * 
+ *
  * @copyright Copyright (c) 2023
- * 
+ *
  */
 #include <Arduino.h>
 
@@ -17,18 +17,18 @@
 #endif
 
 #if MY_DEBUG > 0
-#define MYLOG(tag, ...)                  \
-	do                                   \
-	{                                    \
-		if (tag)                         \
-			Serial.printf("[%s] ", tag); \
-		Serial.printf(__VA_ARGS__);      \
-		Serial.printf("\n");             \
-		if (tag)                         \
+#define MYLOG(tag, ...)                   \
+	do                                    \
+	{                                     \
+		if (tag)                          \
+			Serial.printf("[%s] ", tag);  \
+		Serial.printf(__VA_ARGS__);       \
+		Serial.printf("\n");              \
+		if (tag)                          \
 			Serial6.printf("[%s] ", tag); \
 		Serial6.printf(__VA_ARGS__);      \
 		Serial6.printf("\n");             \
-	} while (0);                         \
+	} while (0);                          \
 	delay(100)
 #else
 #define MYLOG(...)
@@ -59,8 +59,8 @@ extern custom_param_s custom_parameters;
 // LoRaWAN stuff
 #include "wisblock_cayenne.h"
 // Cayenne LPP Channel numbers per sensor value
-#define LPP_CHANNEL_BATT 1	// Base Board
-#define LPP_CHANNEL_WATER 2 // Status water relay
+#define LPP_CHANNEL_BATT 1		// Base Board
+#define LPP_CHANNEL_WATER 2		// Status water relay
 #define LPP_CHANNEL_NUTRITION 3 // Status nutrition relay
 
 // Other definitions
