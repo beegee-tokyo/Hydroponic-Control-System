@@ -19,8 +19,8 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 80,
-        "y": 540,
+        "x": 512,
+        "y": 608,
         "wires": [
             [
                 "811ed5459d95c417",
@@ -39,8 +39,8 @@
         "initialize": "",
         "finalize": "// Code added here will be run when the\n// node is being stopped or re-deployed.\nnode.warn(\"Restart V2\");",
         "libs": [],
-        "x": 250,
-        "y": 540,
+        "x": 706,
+        "y": 688,
         "wires": [
             [
                 "ef54917c25ea6a5c"
@@ -69,8 +69,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 630,
-        "y": 684,
+        "x": 1062,
+        "y": 784,
         "wires": [
             [
                 "e8218aba6d3e1046",
@@ -109,8 +109,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 4,
-        "x": 390,
-        "y": 540,
+        "x": 854,
+        "y": 688,
         "wires": [
             [
                 "91d915157e19cea0",
@@ -147,8 +147,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 620,
-        "y": 520,
+        "x": 1052,
+        "y": 592,
         "wires": [
             [
                 "dc19f50e80bf1284"
@@ -178,8 +178,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 650,
-        "y": 630,
+        "x": 1078,
+        "y": 720,
         "wires": [
             [
                 "dc19f50e80bf1284"
@@ -195,8 +195,8 @@
         "group": "d7227fcd391266e7",
         "voice": "urn:moz-tts:sapi:Microsoft Zira - English (United States)?en-US",
         "always": "",
-        "x": 1200,
-        "y": 680,
+        "x": 1580,
+        "y": 768,
         "wires": []
     },
     {
@@ -219,8 +219,8 @@
         "payloadType": "json",
         "topic": "\"application/command/down\"",
         "topicType": "str",
-        "x": 80,
-        "y": 460,
+        "x": 544,
+        "y": 480,
         "wires": [
             [
                 "74c1791e7bbb14e1"
@@ -238,19 +238,21 @@
         "order": 2,
         "width": 6,
         "height": 1,
-        "passthru": false,
+        "passthru": true,
         "outs": "end",
         "topic": "value",
         "topicType": "msg",
-        "min": "600",
-        "max": "1600",
+        "min": "200",
+        "max": "1500",
         "step": "100",
         "className": "",
-        "x": 80,
-        "y": 340,
+        "x": 544,
+        "y": 384,
         "wires": [
             [
-                "dfa21cf220786d7e"
+                "dfa21cf220786d7e",
+                "3075b79aa06e779a",
+                "3ca59208060b090a"
             ]
         ]
     },
@@ -259,14 +261,14 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Create Payload",
-        "func": "node.warn(\"Received: \" + msg.payload);\nswitch (msg.payload)\n{\n    case 600:\n        node.warn(\"level 600\");\n        msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x02, 0x58]);\n        break;\n    case 700:\n        msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x02, 0xBC]);\n        break;\n    case 800:\n        msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x03, 0x20]);\n        break;\n    case 900:\n        msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x03, 0x84]);\n        break;\n    case 1000:\n        msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x03, 0xe8]);\n        break;\n    case 1100:\n        msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x04, 0x4c]);\n        break;\n    case 1200:\n        msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x04, 0xb0]);\n        break;\n    case 1300:\n        msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x05, 0x14]);\n        break;\n    case 1400:\n        msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x05, 0x78]);\n        break;\n    case 1500:\n        msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x05, 0xdc]);\n        break;\n    case 1600:\n        msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x06, 0x40]);\n        break;\n}\nreturn msg;",
+        "func": "node.warn(\"Received: \" + msg.payload);\n\nmsg.bvalue = Buffer.from([0xaa, 0x55, 0x01, (msg.payload & 0xff000000) >> 24,\n    (msg.payload & 0x00ff0000) >> 16, (msg.payload & 0x0000ff00) >> 8,\n    (msg.payload & 0x000000ff)]);\n\nglobal.nutrition_level = msg.payload;\n\n// switch (msg.payload)\n// {\n//     case 600:\n//         node.warn(\"level 600\");\n//         msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x02, 0x58]);\n//         break;\n//     case 700:\n//         msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x02, 0xBC]);\n//         break;\n//     case 800:\n//         msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x03, 0x20]);\n//         break;\n//     case 900:\n//         msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x03, 0x84]);\n//         break;\n//     case 1000:\n//         msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x03, 0xe8]);\n//         break;\n//     case 1100:\n//         msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x04, 0x4c]);\n//         break;\n//     case 1200:\n//         msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x04, 0xb0]);\n//         break;\n//     case 1300:\n//         msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x05, 0x14]);\n//         break;\n//     case 1400:\n//         msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x05, 0x78]);\n//         break;\n//     case 1500:\n//         msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x05, 0xdc]);\n//         break;\n//     case 1600:\n//         msg.bvalue = Buffer.from([0xaa, 0x55, 0x01, 0x00, 0x00, 0x06, 0x40]);\n//         break;\n// }\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 280,
-        "y": 340,
+        "x": 752,
+        "y": 384,
         "wires": [
             [
                 "0ca72e9092a1eba9"
@@ -280,8 +282,8 @@
         "name": "",
         "action": "",
         "property": "bvalue",
-        "x": 680,
-        "y": 340,
+        "x": 1092,
+        "y": 384,
         "wires": [
             [
                 "cd08a6cef36056c2"
@@ -299,8 +301,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 860,
-        "y": 340,
+        "x": 1280,
+        "y": 384,
         "wires": [
             [
                 "dc19f50e80bf1284"
@@ -333,11 +335,12 @@
         "offcolor": "",
         "animate": false,
         "className": "",
-        "x": 80,
+        "x": 544,
         "y": 160,
         "wires": [
             [
-                "decf2eaf11f7da9c"
+                "decf2eaf11f7da9c",
+                "870d1f60d1a0d8b8"
             ]
         ]
     },
@@ -352,7 +355,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 280,
+        "x": 752,
         "y": 160,
         "wires": [
             [
@@ -367,7 +370,7 @@
         "name": "",
         "action": "",
         "property": "bvalue",
-        "x": 680,
+        "x": 1092,
         "y": 160,
         "wires": [
             [
@@ -386,7 +389,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 860,
+        "x": 1280,
         "y": 160,
         "wires": [
             [
@@ -405,8 +408,8 @@
         "initialize": "",
         "finalize": "// Code added here will be run when the\n// node is being stopped or re-deployed.\nnode.warn(\"Restart V2\");",
         "libs": [],
-        "x": 250,
-        "y": 400,
+        "x": 706,
+        "y": 528,
         "wires": [
             [
                 "3f9d0a22b6ae8d08"
@@ -420,8 +423,8 @@
         "name": "",
         "action": "",
         "property": "bvalue",
-        "x": 680,
-        "y": 400,
+        "x": 1092,
+        "y": 528,
         "wires": [
             [
                 "16fcd54f00538432"
@@ -439,8 +442,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 860,
-        "y": 400,
+        "x": 1280,
+        "y": 528,
         "wires": [
             [
                 "dc19f50e80bf1284"
@@ -451,7 +454,7 @@
         "id": "3f9d0a22b6ae8d08",
         "type": "switch",
         "z": "f6f2187d.f17ca8",
-        "name": "Data?",
+        "name": "DL?",
         "property": "todo",
         "propertyType": "msg",
         "rules": [
@@ -469,8 +472,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 410,
-        "y": 400,
+        "x": 878,
+        "y": 528,
         "wires": [
             [
                 "094d0eb0c7f8a69f"
@@ -484,8 +487,8 @@
         "z": "f6f2187d.f17ca8",
         "name": "Inputs",
         "info": "Manual from UI or from Chirpstack MQTT",
-        "x": 50,
-        "y": 100,
+        "x": 514,
+        "y": 32,
         "wires": []
     },
     {
@@ -494,8 +497,8 @@
         "z": "f6f2187d.f17ca8",
         "name": "Data processing and action preparation",
         "info": "",
-        "x": 330,
-        "y": 100,
+        "x": 822,
+        "y": 32,
         "wires": []
     },
     {
@@ -504,8 +507,8 @@
         "z": "f6f2187d.f17ca8",
         "name": "Output and Actions",
         "info": "",
-        "x": 1210,
-        "y": 100,
+        "x": 1590,
+        "y": 80,
         "wires": []
     },
     {
@@ -516,11 +519,11 @@
         "func": "",
         "outputs": 1,
         "noerr": 0,
-        "initialize": "// Code added here will be run once\n// whenever the node is started.\nglobal.set(\"relay_dev_eui\", \"ac1f09fffe000000\");\nglobal.set(\"sensor_dev_eui\", \"ac1f09fffe000000\");\nglobal.set(\"display_dev_eui\", \"ac1f09fffe000000\");\nglobal.set(\"app_id\", \"a852689f-0000-0000-0000-b073a96f5b7d\");\n\nnode.warn(\"relay_dev_eui = \" + global.get(\"relay_dev_eui\"));\nnode.warn(\"sensor_dev_eui = \" + global.get(\"sensor_dev_eui\"));\nnode.warn(\"display_dev_eui = \" + global.get(\"display_dev_eui\"));\nnode.warn(\"app_id = \" + global.get(\"app_id\"));",
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nglobal.set(\"relay_dev_eui\", \"ac1f09fffe067151\");\nglobal.set(\"sensor_dev_eui\", \"ac1f09fffe0cf054\");\nglobal.set(\"display_dev_eui\", \"ac1f09fffe0a7994\");\nglobal.set(\"app_id\", \"a852689f-d9f0-4d50-86b7-b073a96f5b7d\");\n\nnode.warn(\"relay_dev_eui = \" + global.get(\"relay_dev_eui\"));\nnode.warn(\"sensor_dev_eui = \" + global.get(\"sensor_dev_eui\"));\nnode.warn(\"display_dev_eui = \" + global.get(\"display_dev_eui\"));\nnode.warn(\"app_id = \" + global.get(\"app_id\"));",
         "finalize": "",
         "libs": [],
         "x": 170,
-        "y": 40,
+        "y": 96,
         "wires": [
             []
         ]
@@ -531,8 +534,8 @@
         "z": "f6f2187d.f17ca8",
         "name": "Put your Node DevEUI and AppID here",
         "info": "",
-        "x": 510,
-        "y": 40,
+        "x": 502,
+        "y": 96,
         "wires": []
     },
     {
@@ -546,8 +549,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 860,
-        "y": 460,
+        "x": 1280,
+        "y": 480,
         "wires": [
             [
                 "dc19f50e80bf1284"
@@ -558,7 +561,7 @@
         "id": "3e660655ad4f7f0f",
         "type": "ui_form",
         "z": "f6f2187d.f17ca8",
-        "name": "Water pump times",
+        "name": "Water pump times old",
         "label": "Water pump On/Off times (minutes)",
         "group": "d7227fcd391266e7",
         "order": 2,
@@ -591,11 +594,12 @@
         "topicType": "msg",
         "splitLayout": true,
         "className": "",
-        "x": 90,
-        "y": 220,
+        "x": 524,
+        "y": 256,
         "wires": [
             [
-                "d6bfce9c32d0b93c"
+                "d6bfce9c32d0b93c",
+                "6833292522ee31f6"
             ]
         ]
     },
@@ -604,14 +608,14 @@
         "type": "function",
         "z": "f6f2187d.f17ca8",
         "name": "Create Payload",
-        "func": "if (typeof (msg.payload.on_time) != \"undefined\") {\n    if (typeof (msg.payload.off_time) != \"undefined\") {\n        if ((msg.payload.on_time > msg.payload.off_time) || (msg.payload.off_time < 15) || (msg.payload.on_time < 5)) {\n            node.warn(\"Wrong times\");\n            msg.todo = \"None\";\n            msg.payload = \"Wrong times\";\n\n        } else {\n            msg.payload.on_time = msg.payload.on_time * 60;\n            msg.payload.off_time = msg.payload.off_time * 60;\n            msg.bvalue = Buffer.from([0xaa, 0x55, 0x00, (msg.payload.on_time & 0xff000000) >> 24,\n                (msg.payload.on_time & 0x00ff0000) >> 16, (msg.payload.on_time & 0x0000ff00) >> 8,\n                (msg.payload.on_time & 0x000000ff), (msg.payload.off_time & 0xff000000) >> 24,\n                (msg.payload.off_time & 0x00ff0000) >> 16, (msg.payload.off_time & 0x0000ff00) >> 8,\n                (msg.payload.off_time & 0x000000ff)]);\n            msg.todo = \"Downlink\";\n            node.warn(\"Valid times found\");\n        }\n    } else {\n        node.warn(\"No OFF time\");\n        msg.todo = \"None\";\n        msg.payload = \"No Off Time\";\n    }\n} else {\n    node.warn(\"No ON time\");\n    msg.todo = \"None\";\n    msg.payload = \"No On Time\";\n}\n\nreturn msg;",
+        "func": "if (typeof (msg.payload.on_time) != \"undefined\") {\n    if (typeof (msg.payload.off_time) != \"undefined\") {\n        // if ((msg.payload.on_time > msg.payload.off_time) || (msg.payload.off_time < 15) || (msg.payload.on_time < 5)) {\n        if ((msg.payload.off_time < 15) || (msg.payload.on_time < 5)) {\n            node.warn(\"Wrong times\");\n            msg.todo = \"None\";\n            msg.payload = \"Wrong times\";\n\n        } else {\n            msg.payload.on_time = msg.payload.on_time * 60;\n            msg.payload.off_time = msg.payload.off_time * 60;\n            msg.bvalue = Buffer.from([0xaa, 0x55, 0x00, (msg.payload.on_time & 0xff000000) >> 24,\n                (msg.payload.on_time & 0x00ff0000) >> 16, (msg.payload.on_time & 0x0000ff00) >> 8,\n                (msg.payload.on_time & 0x000000ff), (msg.payload.off_time & 0xff000000) >> 24,\n                (msg.payload.off_time & 0x00ff0000) >> 16, (msg.payload.off_time & 0x0000ff00) >> 8,\n                (msg.payload.off_time & 0x000000ff)]);\n            msg.todo = \"Downlink\";\n            node.warn(\"Valid times found\");\n        }\n    } else {\n        node.warn(\"No OFF time\");\n        msg.todo = \"None\";\n        msg.payload = \"No Off Time\";\n    }\n} else {\n    node.warn(\"No ON time\");\n    msg.todo = \"None\";\n    msg.payload = \"No On Time\";\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 280,
-        "y": 220,
+        "x": 752,
+        "y": 304,
         "wires": [
             [
                 "79354e42f1f0d492"
@@ -625,8 +629,8 @@
         "name": "",
         "action": "",
         "property": "bvalue",
-        "x": 680,
-        "y": 280,
+        "x": 1092,
+        "y": 336,
         "wires": [
             [
                 "6df547a96ede2727"
@@ -644,8 +648,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 860,
-        "y": 280,
+        "x": 1280,
+        "y": 336,
         "wires": [
             [
                 "dc19f50e80bf1284"
@@ -656,7 +660,7 @@
         "id": "79354e42f1f0d492",
         "type": "switch",
         "z": "f6f2187d.f17ca8",
-        "name": "Valid?",
+        "name": "DL?",
         "property": "todo",
         "propertyType": "msg",
         "rules": [
@@ -674,8 +678,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 430,
-        "y": 220,
+        "x": 926,
+        "y": 304,
         "wires": [
             [
                 "391e61a9d6a47b6b",
@@ -700,8 +704,8 @@
         "correl": "",
         "expiry": "",
         "broker": "eb21a8c4eb60d964",
-        "x": 1216,
-        "y": 540,
+        "x": 1600,
+        "y": 608,
         "wires": []
     },
     {
@@ -712,8 +716,8 @@
         "group": "64502c3307ffe74d",
         "voice": "urn:moz-tts:sapi:Microsoft Zira Desktop - English (United States)?en-US",
         "always": true,
-        "x": 1200,
-        "y": 260,
+        "x": 1600,
+        "y": 304,
         "wires": []
     },
     {
@@ -729,8 +733,8 @@
         "tls": true,
         "name": "bernd@giesecke.tk",
         "dname": "Send email",
-        "x": 1204,
-        "y": 486,
+        "x": 1610,
+        "y": 480,
         "wires": []
     },
     {
@@ -744,8 +748,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 870,
-        "y": 220,
+        "x": 1290,
+        "y": 272,
         "wires": [
             [
                 "77e96690dfdc2b5c"
@@ -763,8 +767,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 848,
-        "y": 576,
+        "x": 1290,
+        "y": 624,
         "wires": [
             [
                 "77e96690dfdc2b5c"
@@ -786,13 +790,592 @@
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 640,
-        "y": 576,
+        "x": 1072,
+        "y": 656,
         "wires": [
             [
                 "2115a5b85d049cea"
             ]
         ]
+    },
+    {
+        "id": "3075b79aa06e779a",
+        "type": "persistent value",
+        "z": "f6f2187d.f17ca8",
+        "name": "Nutr. Lvl. Store",
+        "valuesConfig": "5f5faf6d61710c40",
+        "valuesConfigName": "Hydroponic-Persistents",
+        "valueId": "b2ee53a0-f728-11ee-8eab-33542e234137",
+        "value": "nutrition_level",
+        "command": "write",
+        "msgProperty": "payload",
+        "dynamicControl": false,
+        "dynamicCommandMsgProperty": "command",
+        "dynamicValueMsgProperty": "topic",
+        "deepCloneValue": false,
+        "outputPreviousValue": false,
+        "outputPreviousValueMsgProperty": "previous_value",
+        "collectValues": false,
+        "collectValuesMsgProperty": "values",
+        "blockIfEnable": false,
+        "blockIfRule": "eq",
+        "blockIfCompareValue": "",
+        "outputMetaData": false,
+        "outputMetaDataMsgProperty": "meta",
+        "x": 752,
+        "y": 416,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "56372a6faaa9f2be",
+        "type": "persistent value",
+        "z": "f6f2187d.f17ca8",
+        "name": "Nutr. Lvl. Read",
+        "valuesConfig": "5f5faf6d61710c40",
+        "valuesConfigName": "Hydroponic-Persistents",
+        "valueId": "b2ee53a0-f728-11ee-8eab-33542e234137",
+        "value": "nutrition_level",
+        "command": "read",
+        "msgProperty": "payload",
+        "dynamicControl": false,
+        "dynamicCommandMsgProperty": "command",
+        "dynamicValueMsgProperty": "topic",
+        "deepCloneValue": false,
+        "outputPreviousValue": false,
+        "outputPreviousValueMsgProperty": "previous_value",
+        "collectValues": false,
+        "collectValuesMsgProperty": "values",
+        "blockIfEnable": false,
+        "blockIfRule": "eq",
+        "blockIfCompareValue": "",
+        "outputMetaData": false,
+        "outputMetaDataMsgProperty": "meta",
+        "x": 304,
+        "y": 384,
+        "wires": [
+            [
+                "ce4a30598d147719"
+            ],
+            [
+                "ce4a30598d147719"
+            ]
+        ]
+    },
+    {
+        "id": "870d1f60d1a0d8b8",
+        "type": "persistent value",
+        "z": "f6f2187d.f17ca8",
+        "name": "Pump Store",
+        "valuesConfig": "5f5faf6d61710c40",
+        "valuesConfigName": "Hydroponic-Persistents",
+        "valueId": "e88dde10-f72b-11ee-8eab-33542e234137",
+        "value": "pump_status",
+        "command": "write",
+        "msgProperty": "payload",
+        "dynamicControl": false,
+        "dynamicCommandMsgProperty": "command",
+        "dynamicValueMsgProperty": "topic",
+        "deepCloneValue": false,
+        "outputPreviousValue": false,
+        "outputPreviousValueMsgProperty": "previous_value",
+        "collectValues": false,
+        "collectValuesMsgProperty": "values",
+        "blockIfEnable": false,
+        "blockIfRule": "eq",
+        "blockIfCompareValue": "true",
+        "outputMetaData": false,
+        "outputMetaDataMsgProperty": "meta",
+        "x": 742,
+        "y": 192,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "8fdb586139b70ac2",
+        "type": "persistent value",
+        "z": "f6f2187d.f17ca8",
+        "name": "Pump Read",
+        "valuesConfig": "5f5faf6d61710c40",
+        "valuesConfigName": "Hydroponic-Persistents",
+        "valueId": "e88dde10-f72b-11ee-8eab-33542e234137",
+        "value": "pump_status",
+        "command": "read",
+        "msgProperty": "payload",
+        "dynamicControl": false,
+        "dynamicCommandMsgProperty": "command",
+        "dynamicValueMsgProperty": "topic",
+        "deepCloneValue": false,
+        "outputPreviousValue": false,
+        "outputPreviousValueMsgProperty": "previous_value",
+        "collectValues": false,
+        "collectValuesMsgProperty": "values",
+        "blockIfEnable": false,
+        "blockIfRule": "eq",
+        "blockIfCompareValue": "true",
+        "outputMetaData": false,
+        "outputMetaDataMsgProperty": "meta",
+        "x": 314,
+        "y": 160,
+        "wires": [
+            [
+                "8bc2cba06df853f0"
+            ],
+            [
+                "8bc2cba06df853f0"
+            ]
+        ]
+    },
+    {
+        "id": "9b9da9dc3c1586ab",
+        "type": "persistent value",
+        "z": "f6f2187d.f17ca8",
+        "d": true,
+        "name": "On T Read",
+        "valuesConfig": "5f5faf6d61710c40",
+        "valuesConfigName": "Hydroponic-Persistents",
+        "valueId": "f5affd30-f72b-11ee-8eab-33542e234137",
+        "value": "on_time",
+        "command": "read",
+        "msgProperty": "payload",
+        "dynamicControl": false,
+        "dynamicCommandMsgProperty": "command",
+        "dynamicValueMsgProperty": "topic",
+        "deepCloneValue": false,
+        "outputPreviousValue": false,
+        "outputPreviousValueMsgProperty": "previous_value",
+        "collectValues": false,
+        "collectValuesMsgProperty": "values",
+        "blockIfEnable": false,
+        "blockIfRule": "eq",
+        "blockIfCompareValue": "true",
+        "outputMetaData": false,
+        "outputMetaDataMsgProperty": "meta",
+        "x": 262,
+        "y": 896,
+        "wires": [
+            [
+                "48bcfd158bef2c38"
+            ],
+            [
+                "48bcfd158bef2c38"
+            ]
+        ]
+    },
+    {
+        "id": "92bde994c391933d",
+        "type": "persistent value",
+        "z": "f6f2187d.f17ca8",
+        "d": true,
+        "name": "On T Store",
+        "valuesConfig": "5f5faf6d61710c40",
+        "valuesConfigName": "Hydroponic-Persistents",
+        "valueId": "f5affd30-f72b-11ee-8eab-33542e234137",
+        "value": "on_time",
+        "command": "write",
+        "msgProperty": "payload",
+        "dynamicControl": false,
+        "dynamicCommandMsgProperty": "command",
+        "dynamicValueMsgProperty": "topic",
+        "deepCloneValue": false,
+        "outputPreviousValue": false,
+        "outputPreviousValueMsgProperty": "previous_value",
+        "collectValues": false,
+        "collectValuesMsgProperty": "values",
+        "blockIfEnable": false,
+        "blockIfRule": "eq",
+        "blockIfCompareValue": "true",
+        "outputMetaData": false,
+        "outputMetaDataMsgProperty": "meta",
+        "x": 730,
+        "y": 832,
+        "wires": [
+            [],
+            [
+                "9b9da9dc3c1586ab"
+            ]
+        ]
+    },
+    {
+        "id": "48bcfd158bef2c38",
+        "type": "ui_slider",
+        "z": "f6f2187d.f17ca8",
+        "d": true,
+        "name": "",
+        "label": "Water Pump Times Slider",
+        "tooltip": "Left = ON, right = OFF",
+        "group": "d7227fcd391266e7",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "outs": "end",
+        "topic": "topic",
+        "topicType": "msg",
+        "min": "5",
+        "max": "55",
+        "step": "5",
+        "className": "",
+        "x": 494,
+        "y": 896,
+        "wires": [
+            [
+                "6f79d8aec960a7c8",
+                "92bde994c391933d"
+            ]
+        ]
+    },
+    {
+        "id": "6f79d8aec960a7c8",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "d": true,
+        "name": "Create Payload",
+        "func": "if (typeof (msg.payload) != \"undefined\") {\n    var on_time = msg.payload;\n    var off_time = 60 - msg.payload;\n    node.warn(\"On time \" + on_time);\n    node.warn(\"Off time \" + off_time);\n\n    on_time = on_time * 60;\n    off_time = off_time * 60;\n    msg.bvalue = Buffer.from([0xaa, 0x55, 0x00, (on_time & 0xff000000) >> 24,\n        (on_time & 0x00ff0000) >> 16, (on_time & 0x0000ff00) >> 8,\n        (on_time & 0x000000ff), (off_time & 0xff000000) >> 24,\n        (off_time & 0x00ff0000) >> 16, (off_time & 0x0000ff00) >> 8,\n        (off_time & 0x000000ff)]);\n    msg.todo = \"Downlink\";\n    node.warn(\"Valid times found\");\n} else {\n    node.warn(\"No ON time\");\n    msg.todo = \"None\";\n    msg.payload = \"No On Time\";\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 736,
+        "y": 896,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "33a8940c71a3b0d1",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "d": true,
+        "name": "1",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "on_time",
+        "payloadType": "global",
+        "x": 82,
+        "y": 896,
+        "wires": [
+            [
+                "9b9da9dc3c1586ab"
+            ]
+        ]
+    },
+    {
+        "id": "7a4b40661ebbe674",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "d": true,
+        "name": "3",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "nutrition_level",
+        "payloadType": "global",
+        "x": 78,
+        "y": 992,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e7a2ae0d47aa6caa",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "d": true,
+        "name": "2",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "pump_status",
+        "payloadType": "global",
+        "x": 78,
+        "y": 944,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "be0439f94c96f47b",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "Initial Read",
+        "props": [
+            {
+                "p": "command",
+                "v": "read",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "x": 74,
+        "y": 160,
+        "wires": [
+            [
+                "b6ac6e8b2fbdbda4",
+                "263bb01b69e06339",
+                "8fdb586139b70ac2",
+                "56372a6faaa9f2be"
+            ]
+        ]
+    },
+    {
+        "id": "74a3630755c97110",
+        "type": "persistent value",
+        "z": "f6f2187d.f17ca8",
+        "name": "On T Store",
+        "valuesConfig": "5f5faf6d61710c40",
+        "valuesConfigName": "Hydroponic-Persistents",
+        "valueId": "b78cd600-f7ac-11ee-8eab-33542e234137",
+        "value": "t_on_time",
+        "command": "write",
+        "msgProperty": "payload.on_time",
+        "dynamicControl": false,
+        "dynamicCommandMsgProperty": "command",
+        "dynamicValueMsgProperty": "topic",
+        "deepCloneValue": false,
+        "outputPreviousValue": false,
+        "outputPreviousValueMsgProperty": "previous_value",
+        "collectValues": false,
+        "collectValuesMsgProperty": "values",
+        "blockIfEnable": false,
+        "blockIfRule": "eq",
+        "blockIfCompareValue": "true",
+        "outputMetaData": false,
+        "outputMetaDataMsgProperty": "meta",
+        "x": 1082,
+        "y": 208,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "de06dec5652f7f2f",
+        "type": "persistent value",
+        "z": "f6f2187d.f17ca8",
+        "name": "Off T Store",
+        "valuesConfig": "5f5faf6d61710c40",
+        "valuesConfigName": "Hydroponic-Persistents",
+        "valueId": "c05a6810-f7ac-11ee-8eab-33542e234137",
+        "value": "t_off_time",
+        "command": "write",
+        "msgProperty": "payload.off_time",
+        "dynamicControl": false,
+        "dynamicCommandMsgProperty": "command",
+        "dynamicValueMsgProperty": "topic",
+        "deepCloneValue": false,
+        "outputPreviousValue": false,
+        "outputPreviousValueMsgProperty": "previous_value",
+        "collectValues": false,
+        "collectValuesMsgProperty": "values",
+        "blockIfEnable": false,
+        "blockIfRule": "eq",
+        "blockIfCompareValue": "true",
+        "outputMetaData": false,
+        "outputMetaDataMsgProperty": "meta",
+        "x": 1082,
+        "y": 256,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "263bb01b69e06339",
+        "type": "persistent value",
+        "z": "f6f2187d.f17ca8",
+        "name": "Off T Read",
+        "valuesConfig": "5f5faf6d61710c40",
+        "valuesConfigName": "Hydroponic-Persistents",
+        "valueId": "c05a6810-f7ac-11ee-8eab-33542e234137",
+        "value": "t_off_time",
+        "command": "read",
+        "msgProperty": "payload.off_time",
+        "dynamicControl": true,
+        "dynamicCommandMsgProperty": "command",
+        "dynamicValueMsgProperty": "topic",
+        "deepCloneValue": false,
+        "outputPreviousValue": false,
+        "outputPreviousValueMsgProperty": "previous_value",
+        "collectValues": false,
+        "collectValuesMsgProperty": "values",
+        "blockIfEnable": false,
+        "blockIfRule": "eq",
+        "blockIfCompareValue": "true",
+        "outputMetaData": false,
+        "outputMetaDataMsgProperty": "meta",
+        "x": 314,
+        "y": 240,
+        "wires": [
+            [
+                "3e660655ad4f7f0f"
+            ],
+            [
+                "3e660655ad4f7f0f"
+            ]
+        ]
+    },
+    {
+        "id": "b6ac6e8b2fbdbda4",
+        "type": "persistent value",
+        "z": "f6f2187d.f17ca8",
+        "name": "On T Read",
+        "valuesConfig": "5f5faf6d61710c40",
+        "valuesConfigName": "Hydroponic-Persistents",
+        "valueId": "b78cd600-f7ac-11ee-8eab-33542e234137",
+        "value": "t_on_time",
+        "command": "read",
+        "msgProperty": "payload.on_time",
+        "dynamicControl": false,
+        "dynamicCommandMsgProperty": "command",
+        "dynamicValueMsgProperty": "topic",
+        "deepCloneValue": false,
+        "outputPreviousValue": false,
+        "outputPreviousValueMsgProperty": "previous_value",
+        "collectValues": false,
+        "collectValuesMsgProperty": "values",
+        "blockIfEnable": false,
+        "blockIfRule": "eq",
+        "blockIfCompareValue": "true",
+        "outputMetaData": false,
+        "outputMetaDataMsgProperty": "meta",
+        "x": 310,
+        "y": 304,
+        "wires": [
+            [
+                "3e660655ad4f7f0f"
+            ],
+            [
+                "3e660655ad4f7f0f"
+            ]
+        ]
+    },
+    {
+        "id": "6fa75f0276924289",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "t_on_time",
+        "func": "node.warn(\"On \" + msg.payload.on_time + \" Off \" + msg.payload.on_time);\nnode.warn(\"Global On \" + global.t_off_time);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 908,
+        "y": 224,
+        "wires": [
+            [
+                "74a3630755c97110"
+            ]
+        ]
+    },
+    {
+        "id": "5c889ad9f2d2e377",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "t_off_time",
+        "func": "node.warn(\"On \" + msg.payload.on_time + \" Off \" + msg.payload.on_time);\nnode.warn(\"Global Off \" + global.t_off_time);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 908,
+        "y": 256,
+        "wires": [
+            [
+                "de06dec5652f7f2f",
+                "3ca59208060b090a"
+            ]
+        ]
+    },
+    {
+        "id": "6833292522ee31f6",
+        "type": "delay",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 756,
+        "y": 256,
+        "wires": [
+            [
+                "6fa75f0276924289",
+                "5c889ad9f2d2e377"
+            ]
+        ]
+    },
+    {
+        "id": "3ca59208060b090a",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "inject",
+        "func": "msg.command = 'read';\nnode.warn(\"Injecting values\");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 94,
+        "y": 304,
+        "wires": [
+            [
+                "263bb01b69e06339",
+                "b6ac6e8b2fbdbda4",
+                "56372a6faaa9f2be"
+            ]
+        ]
+    },
+    {
+        "id": "919ba85f16815131",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "Set initial values",
+        "info": "From global storage",
+        "x": 96,
+        "y": 32,
+        "wires": []
     },
     {
         "id": "c5ab0dca3e55c9d0",
@@ -862,6 +1445,67 @@
         "width": 9,
         "collapse": false,
         "className": ""
+    },
+    {
+        "id": "5f5faf6d61710c40",
+        "type": "persistent values config",
+        "name": "Hydroponic-Persistents",
+        "values": [
+            {
+                "id": "b2ee53a0-f728-11ee-8eab-33542e234137",
+                "name": "nutrition_level",
+                "datatype": "num",
+                "default": 200,
+                "description": "Last nutrition level set",
+                "scope": "global",
+                "storage": "default"
+            },
+            {
+                "id": "e88dde10-f72b-11ee-8eab-33542e234137",
+                "name": "pump_status",
+                "datatype": "bool",
+                "default": false,
+                "description": "Last pump status",
+                "scope": "global",
+                "storage": "default"
+            },
+            {
+                "id": "f5affd30-f72b-11ee-8eab-33542e234137",
+                "name": "on_time",
+                "datatype": "num",
+                "default": 20,
+                "description": "Pump ON time",
+                "scope": "global",
+                "storage": "default"
+            },
+            {
+                "id": "00472ab0-f737-11ee-8eab-33542e234137",
+                "name": "off_time",
+                "datatype": "num",
+                "default": 40,
+                "description": "Pump OFF time",
+                "scope": "global",
+                "storage": "default"
+            },
+            {
+                "id": "b78cd600-f7ac-11ee-8eab-33542e234137",
+                "name": "t_on_time",
+                "datatype": "num",
+                "default": 0,
+                "description": "",
+                "scope": "global",
+                "storage": "default"
+            },
+            {
+                "id": "c05a6810-f7ac-11ee-8eab-33542e234137",
+                "name": "t_off_time",
+                "datatype": "num",
+                "default": 0,
+                "description": "",
+                "scope": "global",
+                "storage": "default"
+            }
+        ]
     },
     {
         "id": "a3dafe33b12d76a8",

@@ -171,7 +171,7 @@ The firmware for the Display Node is based on RUI3 BSP. Source code is in the [H
 ### RAKPiOS
 RAKPiOS, a custom OS based on the Raspberry Pi OS that includes all of the required drivers, some security changes, helper scripts, and Docker by default. The RAKPiOS is designed for the RAKwireless WisGate Connect.
 
-[RAKPiOs Documentation](https://docs.rakwireless.com/Product-Categories/Software-APIs-and-Libraries/RAKPiOS/Overview/)
+[RAKPiOS Documentation](https://docs.rakwireless.com/Product-Categories/Software-APIs-and-Libraries/RAKPiOS/Overview/)
 
 <center> <img src="./assets/rakpios.png" alt="RAKPiOS"> </center>
 
@@ -450,7 +450,7 @@ Then the "base64" node is converting the payload into Base64 and forwarded to th
 
 #### Nutrition refill
 During tests I found that specially during setup with plain water in the tank, the nutrition levels are only raising very slow. This is because the hose between the nutrition tank and the water tank is set to drip only for 10 seconds. Which adds too less nutrition during the setup.    
-To accelerate the nutrition refill on a new setup, the UI button "Nutrition Refill" cn be used to send a command to the WisBlock Control Node to keep the nutrition valve open for a longer time.    
+To accelerate the nutrition refill on a new setup, the UI button "Nutrition Refill" can be used to send a command to the WisBlock Control Node to keep the nutrition valve open for a longer time.    
 The flow is very simple, from the UI button, the MQTT payload is created and then the command is sent to the device through the MQTT publish function.     
 
 <center> <img src="./assets/node-red-nutrition-refill-flow.png" alt="Check message"> </center> 
